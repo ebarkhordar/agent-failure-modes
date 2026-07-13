@@ -29,6 +29,7 @@ look like "the model being dumb."
 | Cache-key & hashing collisions | Distinct inputs serialize to one key; caches return the wrong entry | [013](entries/013-lightrag-argshash-collision.md) |
 | Schema traversal completeness | A recursive walker skips a valid branch of the tree | [014](entries/014-pydantic-ai-schema-composition-recursion.md) |
 | Indexing & counting contracts | Producer and consumers disagree on the index base; values off by one | [016](entries/016-changedetection-browser-step-offbyone.md) |
+| Error handling & success reporting | A swallowed failure is reported as success; a status flag gates the recovery path | [019](entries/019-ldr-indexed-without-embeddings.md) |
 
 ## Entry format
 
