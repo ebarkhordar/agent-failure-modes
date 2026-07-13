@@ -22,9 +22,13 @@ look like "the model being dumb."
 | Retrieval & scoring math | Similarity scores misinterpreted, rankings inverted | [004](entries/004-ldr-faiss-metric-inversion.md) |
 | Streaming & usage accounting | Streamed deltas and token counts wrong or incomplete | [005](entries/005-sambanova-stale-delta.md), [006](entries/006-anthropic-cache-tokens-lost.md) |
 | Text decomposition contracts | Two line/character decompositions disagree; positions desync | [007](entries/007-serena-splitlines-desync.md), [008](entries/008-serena-glob-question.md) |
-| Template & token rendering | Tokens valid in one context crash in another | [009](entries/009-changedetection-restock-token.md) |
+| Template & token rendering | Tokens valid in one context crash in another, or raw templates shown as rendered values | [009](entries/009-changedetection-restock-token.md), [015](entries/015-changedetection-jinja-url-raw.md) |
 | Path & name handling | Names escape their intended directory | [010](entries/010-serena-memory-path-escape.md) |
-| Initialization & control flow | Variables read on paths where they were never bound | [011](entries/011-cohere-unbound-documents.md) |
+| Initialization & control flow | Variables read where never bound; guard branches left unreachable | [011](entries/011-cohere-unbound-documents.md), [017](entries/017-gpt-researcher-optional-str-sentinel.md) |
+| Resource liveness & reconnection | A cached handle to a cullable resource goes stale; the recovery path fails to recover | [012](entries/012-jupyter-mcp-kernel-liveness.md) |
+| Cache-key & hashing collisions | Distinct inputs serialize to one key; caches return the wrong entry | [013](entries/013-lightrag-argshash-collision.md) |
+| Schema traversal completeness | A recursive walker skips a valid branch of the tree | [014](entries/014-pydantic-ai-schema-composition-recursion.md) |
+| Indexing & counting contracts | Producer and consumers disagree on the index base; values off by one | [016](entries/016-changedetection-browser-step-offbyone.md) |
 
 ## Entry format
 
