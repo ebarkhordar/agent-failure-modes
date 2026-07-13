@@ -3,7 +3,7 @@
 - **Repo:** datalayer/jupyter-mcp-server
 - **Surface:** `restart_notebook_tool.py` (JUPYTER_SERVER mode)
 - **Class:** resource liveness & reconnection
-- **Fix:** [PR #267](https://github.com/datalayer/jupyter-mcp-server/pull/267) (issue [#260](https://github.com/datalayer/jupyter-mcp-server/issues/260))
+- **Fix:** [PR #267](https://github.com/datalayer/jupyter-mcp-server/pull/267) (merged; issue [#260](https://github.com/datalayer/jupyter-mcp-server/issues/260))
 
 ## Root cause
 

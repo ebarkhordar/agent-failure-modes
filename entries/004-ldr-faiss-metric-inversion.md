@@ -3,7 +3,7 @@
 - **Repo:** LearningCircuit/local-deep-research
 - **Surface:** `CollectionSearchEngine.search()` relevance_score mapping
 - **Class:** retrieval & scoring math
-- **Fix:** [PR #5062](https://github.com/LearningCircuit/local-deep-research/pull/5062) (issue [#4963](https://github.com/LearningCircuit/local-deep-research/issues/4963), owner-filed)
+- **Fix:** [PR #5062](https://github.com/LearningCircuit/local-deep-research/pull/5062) (merged; issue [#4963](https://github.com/LearningCircuit/local-deep-research/issues/4963), owner-filed)
 
 ## Root cause
 

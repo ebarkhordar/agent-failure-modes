@@ -3,7 +3,7 @@
 - **Repo:** LearningCircuit/local-deep-research
 - **Surface:** `focused_iteration_strategy._execute_parallel_searches`
 - **Class:** concurrency & context propagation
-- **Fix:** [PR #5076](https://github.com/LearningCircuit/local-deep-research/pull/5076) (issue [#4904](https://github.com/LearningCircuit/local-deep-research/issues/4904))
+- **Fix:** [PR #5076](https://github.com/LearningCircuit/local-deep-research/pull/5076) (merged; issue [#4904](https://github.com/LearningCircuit/local-deep-research/issues/4904))
 
 ## Root cause
 

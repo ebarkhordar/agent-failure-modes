@@ -3,7 +3,7 @@
 - **Repo:** LearningCircuit/local-deep-research
 - **Surface:** `research_library.services.library_rag_service.index_document`
 - **Class:** error handling & success reporting
-- **Fix:** [PR #5063](https://github.com/LearningCircuit/local-deep-research/pull/5063) (issue [#4855](https://github.com/LearningCircuit/local-deep-research/issues/4855))
+- **Fix:** [PR #5063](https://github.com/LearningCircuit/local-deep-research/pull/5063) (merged; issue [#4855](https://github.com/LearningCircuit/local-deep-research/issues/4855))
 
 ## Root cause
 
