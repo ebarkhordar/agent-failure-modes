@@ -49,6 +49,10 @@ payload passthrough. Every surface that makes an option look supported was prese
 correct for a year. All of them are cheap. The one that makes an option work is a single
 write-back, and it is the only one that no amount of reading the declaration will verify.
 
+Entry [032](032-hindsight-cooccurrence-swap-rebinds-outer-iterate.md) is the same mistake
+with the opposite symptom: there, writing to the loop variable does not fail to reach the
+container, it reaches the loop's own state and corrupts the iterations still to come.
+
 ## Trigger
 
 Setting `tool_results_as_user_messages=True` against an endpoint that rejects
