@@ -3,7 +3,7 @@
 - **Repo:** dgtlmoon/changedetection.io
 - **Surface:** browser-step error reporting (`worker.py`, `notification_service.py`)
 - **Class:** indexing & counting contracts
-- **Fix:** [PR #4258](https://github.com/dgtlmoon/changedetection.io/pull/4258) (issue [#4200](https://github.com/dgtlmoon/changedetection.io/issues/4200))
+- **Fix:** [PR #4258](https://github.com/dgtlmoon/changedetection.io/pull/4258) (merged; issue [#4200](https://github.com/dgtlmoon/changedetection.io/issues/4200))
 
 ## Root cause
 

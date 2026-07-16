@@ -3,7 +3,7 @@
 - **Repo:** camel-ai/camel
 - **Surface:** Hermes ShareGPT message serialization round-trip
 - **Class:** message-conversion boundary
-- **Fix:** [PR #4170](https://github.com/camel-ai/camel/pull/4170)
+- **Fix:** [PR #4170](https://github.com/camel-ai/camel/pull/4170) (merged; issue [#4169](https://github.com/camel-ai/camel/issues/4169))
 
 ## Root cause
 

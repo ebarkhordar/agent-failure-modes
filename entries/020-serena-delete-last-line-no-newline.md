@@ -3,7 +3,7 @@
 - **Repo:** oraios/serena
 - **Surface:** `src/solidlsp/ls_utils.py::TextUtils.delete_text_between_positions`
 - **Class:** text decomposition contract
-- **Fix:** [PR #1678](https://github.com/oraios/serena/pull/1678) (in review)
+- **Fix:** [PR #1678](https://github.com/oraios/serena/pull/1678) (merged)
 
 ## Root cause
 
