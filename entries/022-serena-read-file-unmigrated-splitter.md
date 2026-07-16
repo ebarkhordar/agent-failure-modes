@@ -3,7 +3,7 @@
 - **Repo:** oraios/serena
 - **Surface:** `src/serena/tools/file_tools.py::ReadFileTool.apply`
 - **Class:** text decomposition contract
-- **Fix:** [PR #1699](https://github.com/oraios/serena/pull/1699) (merged)
+- **Fix:** [PR #1699](https://github.com/oraios/serena/pull/1699) (merged 2026-07-15, maintainer-amended before merge)
 
 ## Root cause
 
@@ -46,7 +46,7 @@ unaffected, which is why every existing test passed.
 
 ## Repro
 
-Clean `python:3.11-slim` container against the branch, module provenance
+Clean `python:3.11-slim` container against the submitted branch, module provenance
 asserted (`serena.tools.file_tools.__file__` resolves to `/build/src/serena/tools/file_tools.py`).
 `python -m pytest test/serena/test_file_tools.py -q`: 20 passed on the branch;
 with only `file_tools.py` reverted to `main` and the same new test, 6 failed and
@@ -56,13 +56,29 @@ trailing newline, empty).
 
 ## Lesson
 
-The swap was not mechanical, and that is the second half of the rule.
-`split_lines` yields a trailing empty line for newline-terminated files where
-`splitlines` does not, so replacing the call naively would have changed
-`read_file`'s output for every ordinary file in the repo. Dropping that phantom
-trailing line is what makes the result byte-identical for all files without the
-exotic separators. Two primitives that decompose the same input differ at more
-than the boundary that motivated the change; a safe migration enumerates every
-semantic difference and pins the common case, not just the character that
-exposed the bug. Entry [007](007-serena-splitlines-desync.md) is the same root
-family one file over, and its own follow-up lesson was learned the same way.
+The swap was not mechanical, and the disagreement over how to handle that is the
+second half of the rule. `split_lines` yields a trailing empty line for
+newline-terminated files where `splitlines` does not, so replacing the call
+naively changes `read_file`'s full-file output for every ordinary file in the
+repo. The submitted PR therefore dropped that phantom trailing line, making the
+result byte-identical for all files without the exotic separators: the
+conservative migration, on the reasoning that a bug fix should differ from the
+old behavior only where the bug is.
+
+The maintainer removed that line before merging and took the broader change: on
+`main`, `read_file` now returns `TextUtils.split_lines` output unmodified, so a
+newline-terminated file reads back with its trailing newline. He owns
+`read_file`'s output contract, and he preferred the primitive's honest semantics
+over compatibility with what the buggy version happened to emit.
+
+Both instincts are defensible and the split is the lesson. Pinning the common
+case byte-identical is the right default for an outside contributor, because it
+is the version whose blast radius you can prove and the one that asks least of
+the reviewer. But "minimize the diff against existing behavior" is a heuristic
+for earning a merge, not a statement about correctness: where the old behavior
+was itself an artifact of the bug, preserving it is preserving the artifact, and
+that call belongs to whoever owns the contract. Propose the conservative version,
+show the delta you suppressed and why, and let the maintainer take the wider one
+if the coherence is worth it. Entry [007](007-serena-splitlines-desync.md) is the
+same root family one file over, and its own follow-up lesson was learned the same
+way.
