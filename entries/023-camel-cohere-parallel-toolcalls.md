@@ -3,7 +3,7 @@
 - **Repo:** camel-ai/camel
 - **Surface:** `camel/models/cohere_model.py::CohereModel._to_openai_response`
 - **Class:** message-conversion boundary
-- **Report:** [issue #4185](https://github.com/camel-ai/camel/issues/4185) (reported, fix offered)
+- **Fix:** [PR #4187](https://github.com/camel-ai/camel/pull/4187) (in review; issue [#4185](https://github.com/camel-ai/camel/issues/4185))
 
 ## Root cause
 
