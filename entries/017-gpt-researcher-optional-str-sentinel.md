@@ -3,7 +3,7 @@
 - **Repo:** assafelovic/gpt-researcher
 - **Surface:** `config/config.py::convert_env_value`
 - **Class:** initialization & control flow
-- **Report:** [issue #1899](https://github.com/assafelovic/gpt-researcher/issues/1899) (fix offered)
+- **Report:** [issue #1899](https://github.com/assafelovic/gpt-researcher/issues/1899) (closed as completed; fixed upstream in maintainer [PR #1910](https://github.com/assafelovic/gpt-researcher/pull/1910), merged)
 
 ## Root cause
 
