@@ -32,6 +32,7 @@ look like "the model being dumb."
 | Error handling & success reporting | A swallowed failure is reported as success; a status flag gates the recovery path | [019](entries/019-ldr-indexed-without-embeddings.md) |
 | Concurrency & context propagation | Work offloaded to a thread pool loses the request's ambient context; results silently drop | [018](entries/018-ldr-flask-context-parallel-search.md), [021](entries/021-ldr-progressive-explorer-context.md) |
 | Concurrency & atomic claims | A read of shared state is mistaken for a claim on it; concurrent workers act on the same rows | [026](entries/026-ldr-download-queue-no-atomic-claim.md) |
+| Tool side-effect scope | A tool reaches past what its caller asked for; a capability flag is read as consent to use the capability | [027](entries/027-jupyter-mcp-use-notebook-ui-focus-steal.md) |
 
 ## Entry format
 
