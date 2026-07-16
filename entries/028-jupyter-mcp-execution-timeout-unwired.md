@@ -3,7 +3,7 @@
 - **Repo:** datalayer/jupyter-mcp-server
 - **Surface:** `jupyter_mcp_server/config.py` (`JupyterMCPConfig`), `jupyter_mcp_server/CLI.py`
 - **Class:** configuration wiring & documented contracts
-- **Fix:** [PR #270](https://github.com/datalayer/jupyter-mcp-server/pull/270) (in review; issue [#264](https://github.com/datalayer/jupyter-mcp-server/issues/264))
+- **Fix:** [PR #270](https://github.com/datalayer/jupyter-mcp-server/pull/270) (merged 2026-07-16; issue [#264](https://github.com/datalayer/jupyter-mcp-server/issues/264))
 
 ## Root cause
 
