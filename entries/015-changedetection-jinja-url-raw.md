@@ -3,7 +3,7 @@
 - **Repo:** dgtlmoon/changedetection.io
 - **Surface:** diff/preview page URL rendering (`processors/.../difference.py`)
 - **Class:** template & token rendering
-- **Fix:** [PR #4256](https://github.com/dgtlmoon/changedetection.io/pull/4256) (issue [#3776](https://github.com/dgtlmoon/changedetection.io/issues/3776))
+- **Fix:** [PR #4256](https://github.com/dgtlmoon/changedetection.io/pull/4256) (in review; issue [#3776](https://github.com/dgtlmoon/changedetection.io/issues/3776))
 
 ## Root cause
 

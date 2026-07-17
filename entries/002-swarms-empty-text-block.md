@@ -3,7 +3,7 @@
 - **Repo:** kyegomez/swarms
 - **Surface:** `swarms/utils/litellm_wrapper.py::anthropic_vision_processing` (and the OpenAI variant)
 - **Class:** message-conversion boundary
-- **Fix:** [PR #1712](https://github.com/kyegomez/swarms/pull/1712)
+- **Fix:** [PR #1712](https://github.com/kyegomez/swarms/pull/1712) (in review)
 
 ## Root cause
 

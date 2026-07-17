@@ -3,7 +3,7 @@
 - **Repo:** run-llama/llama_index
 - **Surface:** `get_cohere_chat_request`
 - **Class:** initialization & control flow
-- **Fix:** [PR #22333](https://github.com/run-llama/llama_index/pull/22333)
+- **Fix:** [PR #22333](https://github.com/run-llama/llama_index/pull/22333) (in review)
 
 ## Root cause
 

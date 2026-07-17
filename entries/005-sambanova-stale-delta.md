@@ -3,7 +3,7 @@
 - **Repo:** run-llama/llama_index
 - **Surface:** SambaNova `stream_chat` chunk handling
 - **Class:** streaming & usage accounting
-- **Fix:** [PR #22337](https://github.com/run-llama/llama_index/pull/22337)
+- **Fix:** [PR #22337](https://github.com/run-llama/llama_index/pull/22337) (in review)
 
 ## Root cause
 

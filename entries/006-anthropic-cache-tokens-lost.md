@@ -3,7 +3,7 @@
 - **Repo:** run-llama/llama_index
 - **Surface:** `llms-anthropic` streaming usage aggregation
 - **Class:** streaming & usage accounting
-- **Fix:** [PR #22311](https://github.com/run-llama/llama_index/pull/22311)
+- **Fix:** [PR #22311](https://github.com/run-llama/llama_index/pull/22311) (in review)
 
 ## Root cause
 

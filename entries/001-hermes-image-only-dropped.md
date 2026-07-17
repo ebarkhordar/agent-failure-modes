@@ -3,7 +3,7 @@
 - **Repo:** NousResearch/hermes-agent
 - **Surface:** `agent/anthropic_adapter.py::_convert_user_message`
 - **Class:** message-conversion boundary
-- **Fix:** [PR #57907](https://github.com/NousResearch/hermes-agent/pull/57907)
+- **Fix:** [PR #57907](https://github.com/NousResearch/hermes-agent/pull/57907) (in review)
 
 ## Root cause
 
