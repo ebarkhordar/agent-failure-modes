@@ -3,7 +3,7 @@
 - **Repo:** LearningCircuit/local-deep-research
 - **Surface:** `src/local_deep_research/research_library/routes/library_routes.py::download_bulk`
 - **Class:** concurrency & atomic claims
-- **Fix:** [PR #5081](https://github.com/LearningCircuit/local-deep-research/pull/5081) (in review; issue [#4691](https://github.com/LearningCircuit/local-deep-research/issues/4691), owner-filed)
+- **Fix:** [PR #5081](https://github.com/LearningCircuit/local-deep-research/pull/5081) (merged 2026-07-17; issue [#4691](https://github.com/LearningCircuit/local-deep-research/issues/4691), owner-filed)
 
 ## Root cause
 
