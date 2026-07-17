@@ -3,7 +3,8 @@
 - **Repo:** LearningCircuit/local-deep-research
 - **Surface:** `advanced_search_system/candidate_exploration/progressive_explorer.py::ProgressiveExplorer._parallel_search`
 - **Class:** concurrency & context propagation
-- **Report:** [issue #5079](https://github.com/LearningCircuit/local-deep-research/issues/5079) (reported; sibling of [#4904](https://github.com/LearningCircuit/local-deep-research/issues/4904)/[#5076](https://github.com/LearningCircuit/local-deep-research/pull/5076))
+- **Report:** [issue #5079](https://github.com/LearningCircuit/local-deep-research/issues/5079) (sibling of [#4904](https://github.com/LearningCircuit/local-deep-research/issues/4904)/[#5076](https://github.com/LearningCircuit/local-deep-research/pull/5076))
+- **Fix:** [PR #5123](https://github.com/LearningCircuit/local-deep-research/pull/5123) (in review)
 
 ## Root cause
 
