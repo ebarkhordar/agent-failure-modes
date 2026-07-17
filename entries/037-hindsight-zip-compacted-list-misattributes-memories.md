@@ -3,7 +3,7 @@
 - **Repo:** vectorize-io/hindsight
 - **Surface:** `hindsight-api-slim/hindsight_api/engine/reflect/tools.py::tool_expand`
 - **Class:** indexing, ordering & counting contracts
-- **Fix:** [PR #2759](https://github.com/vectorize-io/hindsight/pull/2759) (in review)
+- **Fix:** [PR #2759](https://github.com/vectorize-io/hindsight/pull/2759) (merged)
 
 ## Root cause
 

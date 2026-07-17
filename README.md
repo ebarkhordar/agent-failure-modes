@@ -31,7 +31,7 @@ that look like "the model being dumb."
 | Schema traversal completeness | A recursive walker skips a valid branch of the tree | 1 | [014](entries/014-pydantic-ai-schema-composition-recursion.md) |
 | Error handling & success reporting | A swallowed failure is reported as success; a status flag gates the recovery path | 1 | [019](entries/019-ldr-indexed-without-embeddings.md) |
 | Concurrency & atomic claims | A read of shared state is mistaken for a claim on it; concurrent workers act on the same rows | 1 | [026](entries/026-ldr-download-queue-no-atomic-claim.md) |
-| Configuration wiring & documented contracts | A documented setting reaches no code that reads it; a sentinel's documented meaning is never implemented | 1 | [028](entries/028-jupyter-mcp-execution-timeout-unwired.md) |
+| Configuration wiring & documented contracts | A documented setting reaches no code that reads it; a sentinel's documented meaning is never implemented | 2 | [028](entries/028-jupyter-mcp-execution-timeout-unwired.md), [048](entries/048-jupyter-mcp-execute-code-kernel-id-discarded.md) |
 
 ## Entry format
 

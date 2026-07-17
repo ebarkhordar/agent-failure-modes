@@ -4,7 +4,7 @@
 - **Surface:** `hindsight_api/llm/openai_compatible_llm.py`, the `record_llm_call`
   sites in `call()` and `call_with_tools()`
 - **Class:** streaming & usage accounting
-- **Fix:** [PR #2758](https://github.com/vectorize-io/hindsight/pull/2758) (in review)
+- **Fix:** [PR #2758](https://github.com/vectorize-io/hindsight/pull/2758) (merged)
 
 ## Root cause
 
