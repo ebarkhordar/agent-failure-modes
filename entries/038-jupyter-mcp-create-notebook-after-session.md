@@ -4,7 +4,7 @@
 - **Surface:** `jupyter_mcp_server/tools/use_notebook_tool.py::UseNotebookTool.execute`,
   the `JUPYTER_SERVER` branch of `use_mode="create"`
 - **Class:** initialization & control flow
-- **Fix:** [PR #271](https://github.com/datalayer/jupyter-mcp-server/pull/271) (in review)
+- **Fix:** [PR #271](https://github.com/datalayer/jupyter-mcp-server/pull/271) (merged 2026-07-17)
 
 ## Root cause
 
