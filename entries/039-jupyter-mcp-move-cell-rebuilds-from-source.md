@@ -5,7 +5,7 @@
   `::_move_cell_websocket`
 - **Class:** tool side-effect scope
 - **Fix:** [PR #273](https://github.com/datalayer/jupyter-mcp-server/pull/273)
-  (in review; issue [#272](https://github.com/datalayer/jupyter-mcp-server/issues/272))
+  (merged 2026-07-17; issue [#272](https://github.com/datalayer/jupyter-mcp-server/issues/272))
 
 ## Root cause
 
