@@ -5,7 +5,7 @@
   `web/app_factory.py::cleanup_db_session`
 - **Class:** concurrency & context propagation
 - **Fix:** [PR #5137](https://github.com/LearningCircuit/local-deep-research/pull/5137)
-  (in review; prerequisite for
+  (merged; prerequisite for
   [#5123](https://github.com/LearningCircuit/local-deep-research/pull/5123))
 
 ## Root cause
