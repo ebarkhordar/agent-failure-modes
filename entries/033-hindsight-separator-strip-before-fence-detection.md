@@ -3,7 +3,7 @@
 - **Repo:** vectorize-io/hindsight
 - **Surface:** `hindsight-api-slim/hindsight_api/engine/reflect/structured_doc.py::parse_markdown` (the mental-model document parsed and re-rendered on every delta refresh)
 - **Class:** text decomposition contracts
-- **Report:** [issue #2752](https://github.com/vectorize-io/hindsight/issues/2752)
+- **Report:** [issue #2752](https://github.com/vectorize-io/hindsight/issues/2752) (closed as completed)
 - **Fix:** [PR #2755](https://github.com/vectorize-io/hindsight/pull/2755) (merged)
 
 ## Root cause
