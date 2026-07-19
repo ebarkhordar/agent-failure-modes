@@ -3,7 +3,7 @@
 - **Repo:** LearningCircuit/local-deep-research
 - **Surface:** `src/local_deep_research/embeddings/providers/implementations/openai.py` (`OpenAIEmbeddingsProvider.create_embeddings`)
 - **Class:** configuration wiring & documented contracts
-- **Fix:** [PR #5144](https://github.com/LearningCircuit/local-deep-research/pull/5144) (in review;
+- **Fix:** [PR #5144](https://github.com/LearningCircuit/local-deep-research/pull/5144) (merged;
   issue [#4966](https://github.com/LearningCircuit/local-deep-research/issues/4966))
 
 ## Root cause
