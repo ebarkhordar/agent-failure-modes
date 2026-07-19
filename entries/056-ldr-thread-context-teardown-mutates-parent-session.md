@@ -4,7 +4,7 @@
 - **Surface:** `utilities/thread_context.py::thread_context`, against
   `web/app_factory.py::cleanup_db_session`
 - **Class:** concurrency & context propagation
-- **Fix:** [PR #5137](https://github.com/LearningCircuit/local-deep-research/pull/5137)
+- **Fix:** [PR #5137](https://github.com/LearningCircuit/local-deep-research/pull/5137) (merged)
   (merged; prerequisite for
   [#5123](https://github.com/LearningCircuit/local-deep-research/pull/5123))
 

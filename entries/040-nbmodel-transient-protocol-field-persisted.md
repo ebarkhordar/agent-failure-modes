@@ -3,7 +3,7 @@
 - **Repo:** datalayer/jupyter-nbmodel-client
 - **Surface:** `jupyter_nbmodel_client/model.py::save_in_notebook_hook`
 - **Class:** message-conversion boundary
-- **Fix:** [PR #63](https://github.com/datalayer/jupyter-nbmodel-client/pull/63)
+- **Fix:** [PR #63](https://github.com/datalayer/jupyter-nbmodel-client/pull/63) (merged)
   (merged 2026-07-17; reported downstream as
   [jupyter-mcp-server#263](https://github.com/datalayer/jupyter-mcp-server/issues/263))
 

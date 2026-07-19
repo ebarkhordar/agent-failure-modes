@@ -4,7 +4,7 @@
 - **Surface:** `jupyter_mcp_server/tools/execute_cell_tool.py::ExecuteCellTool.execute`,
   the `stream=True` branch
 - **Class:** initialization & control flow
-- **Fix:** [PR #276](https://github.com/datalayer/jupyter-mcp-server/pull/276)
+- **Fix:** [PR #276](https://github.com/datalayer/jupyter-mcp-server/pull/276) (merged)
   (merged 2026-07-17; issue [#275](https://github.com/datalayer/jupyter-mcp-server/issues/275))
 
 ## Root cause

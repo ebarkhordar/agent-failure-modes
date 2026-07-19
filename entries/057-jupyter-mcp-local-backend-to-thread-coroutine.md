@@ -4,7 +4,7 @@
 - **Surface:** `jupyter_mcp_server/jupyter_extension/backends/local_backend.py`, the
   nine `self.contents_manager.{get,new,save}` call sites
 - **Class:** sync/async boundary
-- **Fix:** [PR #284](https://github.com/datalayer/jupyter-mcp-server/pull/284)
+- **Fix:** [PR #284](https://github.com/datalayer/jupyter-mcp-server/pull/284) (merged)
   (merged 2026-07-18; issue [#283](https://github.com/datalayer/jupyter-mcp-server/issues/283))
 
 ## Root cause

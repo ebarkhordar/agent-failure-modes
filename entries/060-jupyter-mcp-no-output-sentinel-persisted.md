@@ -5,7 +5,7 @@
   (the `raw_outputs`-empty fallback branch), with the sentinel produced at
   `jupyter_mcp_server/utils.py:562`
 - **Class:** message-conversion boundaries
-- **Fix:** [PR #286](https://github.com/datalayer/jupyter-mcp-server/pull/286)
+- **Fix:** [PR #286](https://github.com/datalayer/jupyter-mcp-server/pull/286) (merged)
   (merged 2026-07-19; issue [#285](https://github.com/datalayer/jupyter-mcp-server/issues/285))
 
 ## Root cause
