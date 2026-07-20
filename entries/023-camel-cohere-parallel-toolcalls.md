@@ -3,7 +3,7 @@
 - **Repo:** camel-ai/camel
 - **Surface:** `camel/models/cohere_model.py::CohereModel._to_openai_response`
 - **Class:** message-conversion boundary
-- **Fix:** [PR #4187](https://github.com/camel-ai/camel/pull/4187) (in review; issue [#4185](https://github.com/camel-ai/camel/issues/4185))
+- **Fix:** [PR #4187](https://github.com/camel-ai/camel/pull/4187) (merged; issue [#4185](https://github.com/camel-ai/camel/issues/4185))
 
 ## Root cause
 
@@ -30,8 +30,11 @@ shape, `choices` is the axis of *alternative* generations, and
 These are different axes. Encoding a within-turn list onto the alternatives axis
 is a category error, and it fails silently rather than loudly, because every
 consumer downstream is contractually correct to read `choices[0]` and ignore the
-rest. The sibling adapter `camel/models/mistral_model.py:152-166` builds a single
-choice holding all calls; the Cohere adapter is the outlier.
+rest. What the adapter produces is a structurally valid object that means
+something other than what it says, so every consumer written against the schema
+reads it correctly and still gets the wrong answer. The sibling adapter
+`camel/models/mistral_model.py:152-166` builds a single choice holding all
+calls; the Cohere adapter is the outlier.
 
 ## Trigger
 
