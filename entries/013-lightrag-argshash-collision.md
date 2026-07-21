@@ -3,7 +3,7 @@
 - **Repo:** HKUDS/LightRAG
 - **Surface:** `lightrag/utils.py::compute_args_hash` (LLM response-cache key)
 - **Class:** cache-key & hashing collisions
-- **Report:** [issue #3392](https://github.com/HKUDS/LightRAG/issues/3392) (deterministic repro, fix offered)
+- **Report:** [issue #3392](https://github.com/HKUDS/LightRAG/issues/3392) (closed as completed; fixed upstream in [PR #3435](https://github.com/HKUDS/LightRAG/pull/3435), merged 2026-07-21, via length-prefixed encoding of the arguments)
 
 ## Root cause
 
