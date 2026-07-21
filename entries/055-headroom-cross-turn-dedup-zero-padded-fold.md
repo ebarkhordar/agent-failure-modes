@@ -3,8 +3,8 @@
 - **Repo:** headroomlabs-ai/headroom
 - **Surface:** `headroom/transforms/cross_turn_dedup.py` (`_LINENO_RE`, the renumber-fold path)
 - **Class:** text decomposition contracts
-- **Fix:** [PR #2369](https://github.com/headroomlabs-ai/headroom/pull/2369) (in review;
-  self-discovered, no issue)
+- **Fix:** [PR #2369](https://github.com/headroomlabs-ai/headroom/pull/2369) (merged
+  2026-07-21; self-discovered, no issue)
 
 ## Root cause
 
