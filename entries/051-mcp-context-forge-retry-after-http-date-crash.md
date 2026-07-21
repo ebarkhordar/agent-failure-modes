@@ -3,8 +3,8 @@
 - **Repo:** IBM/mcp-context-forge
 - **Surface:** `mcpgateway/utils/retry_manager.py::ResilientHttpClient` (`request`, `stream`)
 - **Class:** error handling & success reporting
-- **Report:** [issue #5674](https://github.com/IBM/mcp-context-forge/issues/5674)
-  (deterministic repro, fix offered)
+- **Fix:** [PR #5745](https://github.com/IBM/mcp-context-forge/pull/5745) (in review;
+  issue [#5674](https://github.com/IBM/mcp-context-forge/issues/5674))
 
 ## Root cause
 
@@ -54,5 +54,7 @@ mocking on the request path, `__file__` provenance confirmed at
 `/src/mcpgateway/utils/retry_manager.py`. `request()` raised `ValueError`;
 `stream()` against the identical response retried and returned gracefully.
 
-Reported as an issue with a PR offered: the repo's CONTRIBUTING mandates an
-issue-first triage gate before an implementation PR.
+Filed issue-first per the repo's CONTRIBUTING triage gate, then followed by the
+implementation in [PR #5745](https://github.com/IBM/mcp-context-forge/pull/5745),
+which guards `request()` with the same `except ValueError` as `stream()` and
+clamps both 429 sleeps to `self.max_delay`.
