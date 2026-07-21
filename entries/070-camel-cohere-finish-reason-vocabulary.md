@@ -3,8 +3,10 @@
 - **Repo:** camel-ai/camel
 - **Surface:** `camel/models/cohere_model.py::CohereModel._to_openai_response`
 - **Class:** message-conversion boundaries
-- **Fix:** [PR #4202](https://github.com/camel-ai/camel/pull/4202) (in review;
-  issue [#4201](https://github.com/camel-ai/camel/issues/4201))
+- **Fix:** [PR #4202](https://github.com/camel-ai/camel/pull/4202) (merged
+  2026-07-21 by fengju0213; issue [#4201](https://github.com/camel-ai/camel/issues/4201)).
+  The maintainer added a follow-up commit `d09322ba` covering the ERROR/TIMEOUT
+  cases and empty response content on top of the mapping.
 
 ## Root cause
 
