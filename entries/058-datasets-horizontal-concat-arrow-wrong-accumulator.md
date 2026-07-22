@@ -3,7 +3,7 @@
 - **Repo:** huggingface/datasets
 - **Surface:** `src/datasets/iterable_dataset.py::HorizontallyConcatenatedMultiSourcesExamplesIterable._iter_arrow`
 - **Class:** indexing, ordering & counting contracts
-- **Fix:** [PR #8342](https://github.com/huggingface/datasets/pull/8342) (in review; issue [#8341](https://github.com/huggingface/datasets/issues/8341))
+- **Fix:** [PR #8342](https://github.com/huggingface/datasets/pull/8342) (merged; issue [#8341](https://github.com/huggingface/datasets/issues/8341))
 
 ## Root cause
 
