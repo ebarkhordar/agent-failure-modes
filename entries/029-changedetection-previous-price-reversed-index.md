@@ -3,7 +3,7 @@
 - **Repo:** dgtlmoon/changedetection.io
 - **Surface:** `changedetectionio/processors/restock_diff/__init__.py::Watch.extra_notification_token_values` (the `{{ restock.previous_price }}` notification token)
 - **Class:** indexing, ordering & counting contracts
-- **Report:** [issue #4260](https://github.com/dgtlmoon/changedetection.io/issues/4260) (deterministic repro, one-character fix offered)
+- **Report:** [issue #4260](https://github.com/dgtlmoon/changedetection.io/issues/4260) (closed as completed; fixed upstream in maintainer [PR #4268](https://github.com/dgtlmoon/changedetection.io/pull/4268), merged 2026-07-22)
 
 ## Root cause
 
