@@ -3,7 +3,7 @@
 - **Repo:** huggingface/datasets
 - **Surface:** `src/datasets/formatting/formatting.py`, `NumpyArrowExtractor._arrow_array_to_numpy`, the `any(...)` that decides object dtype (the `np.isnan` clause around line 194)
 - **Class:** round-trip & export fidelity
-- **Fix:** [PR #8352](https://github.com/huggingface/datasets/pull/8352) (in review;
+- **Fix:** [PR #8352](https://github.com/huggingface/datasets/pull/8352) (merged;
   issue [#8351](https://github.com/huggingface/datasets/issues/8351))
 
 ## Root cause
