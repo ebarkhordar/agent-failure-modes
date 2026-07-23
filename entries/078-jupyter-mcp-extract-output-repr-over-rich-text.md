@@ -3,8 +3,13 @@
 - **Repo:** datalayer/jupyter-mcp-server
 - **Surface:** `jupyter_mcp_server/utils.py`, the `display_data` / `execute_result` branch of `extract_output` (around lines 289-297)
 - **Class:** message-conversion boundaries
-- **Fix:** [PR #305](https://github.com/datalayer/jupyter-mcp-server/pull/305) (in
-  review; issue [#304](https://github.com/datalayer/jupyter-mcp-server/issues/304))
+- **Fix:** the richest-readable-text selection landed upstream in
+  jupyter-kernel-client as `get_mimebundle_text`
+  ([PR #44](https://github.com/datalayer/jupyter-kernel-client/pull/44), merged,
+  released in 0.12.0), so every consumer of the client shares one implementation;
+  [jupyter-mcp-server PR #305](https://github.com/datalayer/jupyter-mcp-server/pull/305)
+  (issue [#304](https://github.com/datalayer/jupyter-mcp-server/issues/304)) reworks
+  `extract_output` to delegate to it
 
 ## Root cause
 
