@@ -5,7 +5,7 @@
   (the pandas-version guard that deletes `_PANDAS_READ_CSV_NEW_1_3_0_PARAMETERS`)
 - **Class:** indexing, ordering & counting contracts
 - **Fix:** [PR #8358](https://github.com/huggingface/datasets/pull/8358)
-  (in review; self-discovered, no issue)
+  (merged 2026-07-24; self-discovered, no issue)
 
 ## Root cause
 

@@ -5,7 +5,7 @@
   (column selection), with the ids assigned in `deepdoc/parser/pdf_parser.py`
 - **Class:** indexing, ordering & counting contracts
 - **Fix:** [PR #17282](https://github.com/infiniflow/ragflow/pull/17282)
-  (in review; issue [#17199](https://github.com/infiniflow/ragflow/issues/17199))
+  (merged 2026-07-24; issue [#17199](https://github.com/infiniflow/ragflow/issues/17199))
 
 ## Root cause
 

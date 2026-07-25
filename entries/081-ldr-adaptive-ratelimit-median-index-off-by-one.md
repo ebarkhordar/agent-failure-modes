@@ -5,7 +5,7 @@
   `AdaptiveRateLimitTracker._update_estimate` (the `percentile_50` index)
 - **Class:** indexing, ordering & counting contracts
 - **Fix:** [PR #5201](https://github.com/LearningCircuit/local-deep-research/pull/5201)
-  (in review; self-discovered, no issue)
+  (merged 2026-07-25; self-discovered, no issue)
 
 ## Root cause
 

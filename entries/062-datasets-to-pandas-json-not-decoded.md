@@ -3,7 +3,7 @@
 - **Repo:** huggingface/datasets
 - **Surface:** `src/datasets/arrow_dataset.py` (`Dataset.to_pandas`, `Dataset.to_polars`)
 - **Class:** round-trip & export fidelity
-- **Fix:** [PR #8344](https://github.com/huggingface/datasets/pull/8344) (in review;
+- **Fix:** [PR #8344](https://github.com/huggingface/datasets/pull/8344) (merged 2026-07-24;
   issue [#8343](https://github.com/huggingface/datasets/issues/8343))
 
 ## Root cause
