@@ -2,7 +2,7 @@
 
 - **Repo:** LearningCircuit/local-deep-research
 - **Surface:** `benchmarks/web_api/benchmark_service.py::generate_query_hash`
-- **Class:** cache-key & hashing collisions
+- **Class:** cache keys & invalidation
 - **Fix:** [PR #5080](https://github.com/LearningCircuit/local-deep-research/pull/5080) (merged; issue [#4860](https://github.com/LearningCircuit/local-deep-research/issues/4860), owner-filed)
 
 ## Root cause
