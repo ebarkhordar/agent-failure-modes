@@ -8,8 +8,8 @@
   ([PR #44](https://github.com/datalayer/jupyter-kernel-client/pull/44), merged,
   released in 0.12.0), so every consumer of the client shares one implementation;
   [jupyter-mcp-server PR #305](https://github.com/datalayer/jupyter-mcp-server/pull/305)
-  (issue [#304](https://github.com/datalayer/jupyter-mcp-server/issues/304)) reworks
-  `extract_output` to delegate to it
+  (merged 2026-07-23; issue [#304](https://github.com/datalayer/jupyter-mcp-server/issues/304))
+  reworks `extract_output` to delegate to it
 
 ## Root cause
 
