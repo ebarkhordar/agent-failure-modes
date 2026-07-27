@@ -4,8 +4,14 @@
 - **Surface:** `deepeval/metrics/turn_relevancy/turn_relevancy.py` and
   `deepeval/metrics/topic_adherence/topic_adherence.py`, each `is_successful`
 - **Class:** error handling & success reporting
-- **Fix:** [PR #2956](https://github.com/confident-ai/deepeval/pull/2956) (in review;
-  self-discovered, no issue)
+- **Fix:** fixed upstream on `main` by
+  [PR #2951](https://github.com/confident-ai/deepeval/pull/2951) (merged 2026-07-27 by
+  penguine-ip), which deleted both per-metric `is_successful` overrides so the two metrics
+  inherit `BaseConversationalMetric.is_successful` (`base_metric.py:158-168`), and that one
+  assigns `self.success` on every branch before returning it. Our
+  [PR #2956](https://github.com/confident-ai/deepeval/pull/2956), which fixed the two bare
+  compares in place, was closed as superseded (self-discovered, no issue). The defect was
+  not disputed; the repair landed as part of a wider refactor.
 
 ## Root cause
 
@@ -62,3 +68,9 @@ returns `True` (correct sibling) while `TurnRelevancyMetric.is_successful()` and
 = ` to the two bare compares (one line per file); a per-metric unit test sets
 `score`/`threshold` and calls `is_successful()` standalone, failing on `main` and
 passing on the branch.
+
+The repair that landed upstream is the stronger one and worth naming, because it is the
+general answer to this class: instead of adding the missing assignment at each override,
+#2951 deleted the overrides so both metrics reach the base implementation that was already
+correct. A duplicated method that a subclass reimplements only to restate is a place this
+defect can reappear; removing the duplication removes the site.
