@@ -4,8 +4,9 @@
 - **Surface:** `deepspeed/autotuning/utils.py`, `get_val_by_key` (consumed by
   `deepspeed/autotuning/scheduler.py`)
 - **Class:** recursive traversal completeness
-- **Fix:** [PR #8177](https://github.com/deepspeedai/DeepSpeed/pull/8177) (in review;
-  issue [#8176](https://github.com/deepspeedai/DeepSpeed/issues/8176))
+- **Fix:** [PR #8177](https://github.com/deepspeedai/DeepSpeed/pull/8177) (merged
+  2026-07-26 by tohtana; issue
+  [#8176](https://github.com/deepspeedai/DeepSpeed/issues/8176))
 
 ## Root cause
 
@@ -14,10 +15,18 @@ level it recurses, but it returns the result of the recursive call on the *first
 dict-valued entry unconditionally:
 
 ```python
-for k, v in d.items():
-    if isinstance(v, dict):
-        return get_val_by_key(v, k)   # commits to the first subdict, even if it returns None
+def get_val_by_key(d: dict, k):
+    if k in d:
+        return d[k]
+    for v in d.values():
+        if isinstance(v, dict):
+            return get_val_by_key(v, k)   # commits to the first subdict, even on None
+    return None
 ```
+
+The loop is written as if it were iterating over candidates, but the `return` inside it
+is unguarded, so the first dict-valued entry consumes the whole loop. The function is not
+"search the tree", it is "search the leftmost path".
 
 If the target key lives under a later sibling subdict, the function has already
 returned `None` out of the first subtree and never looks at the rest. A correct
@@ -40,6 +49,11 @@ structure has a paired reader and writer, they must agree on traversal completen
 a writer that visits every subtree and a reader that stops at the first are
 inconsistent, and the writer's behavior is the contract the reader is failing to
 meet.
+
+The concrete shape to grep for is a `return f(child)` sitting directly inside a loop over
+children: a loop that cannot iterate. It reads as a search because the loop is there and
+behaves as a single lookup because the `return` is unguarded. The tell that the repair is
+needed is a sentinel-returning recursive call whose result is never inspected.
 
 ## Trigger
 
