@@ -5,8 +5,9 @@
   (`_batch_csv`), and `src/datasets/io/sql.py`: each calls `batch.to_pandas()` with
   no arguments
 - **Class:** round-trip & export fidelity
-- **Fix:** [PR #8366](https://github.com/huggingface/datasets/pull/8366) (in review;
-  issue [#8365](https://github.com/huggingface/datasets/issues/8365))
+- **Fix:** [PR #8366](https://github.com/huggingface/datasets/pull/8366) (merged
+  2026-07-28 by lhoestq; issue
+  [#8365](https://github.com/huggingface/datasets/issues/8365))
 
 ## Root cause
 
