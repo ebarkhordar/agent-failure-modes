@@ -7,10 +7,12 @@
   (`:11252-11254`)
 - **Class:** configuration wiring & documented contracts
 - **Report:** reproduced publicly on
-  [issue #2808](https://github.com/vectorize-io/hindsight/issues/2808#issuecomment-5017611072).
-  Triage only, no PR from us: the competing-PR gate failed (open PR #2804 already modified
-  the fault file at both sites), and the direction to resolve it in was a policy fork for
-  the maintainers.
+  [issue #2808](https://github.com/vectorize-io/hindsight/issues/2808#issuecomment-5017611072)
+  (closed as completed), fixed upstream by
+  [PR #2804](https://github.com/vectorize-io/hindsight/pull/2804) (merged 2026-07-21).
+  Triage only, no PR from us: the competing-PR gate failed (#2804 was already open and
+  already modified the fault file at both sites), and the direction to resolve it in was a
+  policy fork for the maintainers. See the closing note for how they resolved it.
 
 ## Root cause
 
