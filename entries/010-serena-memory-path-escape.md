@@ -14,7 +14,7 @@ directory.
 ## Invariant violated
 
 A name is not a path. Any user- or model-supplied identifier that becomes a
-filesystem path must be validated to stay inside its root — especially in
+filesystem path must be validated to stay inside its root, especially in
 agent systems, where the "user" supplying the name may itself be a model
 following injected instructions.
 

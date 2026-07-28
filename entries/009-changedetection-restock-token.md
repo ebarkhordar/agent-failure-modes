@@ -28,5 +28,5 @@ fires.
 
 Reproduced on HEAD with a jinja repro; fix is a one-line safe-empty
 placeholder in the default dict plus a pytest modeled on the repo's existing
-token tests. Maintainer: "good enough fix for now" — the deeper refactor is
+token tests. Maintainer: "good enough fix for now"; the deeper refactor is
 theirs to schedule.

@@ -21,7 +21,7 @@ truncated completion is reported as one that finished normally.
 
 Streaming is worse: there is no `response.incomplete` / `response.failed` branch at
 all, so a truncated stream hits the generic safety fallback, which both emits
-`finish_reason='stop'` and never sets `state.usage` — the truncation signal *and* the
+`finish_reason='stop'` and never sets `state.usage`: the truncation signal *and* the
 token usage are lost on that path. The two code paths disagree with each other as
 well as with the contract: the same truncation reads differently depending on whether
 the caller streamed.
@@ -31,14 +31,14 @@ the caller streamed.
 An adapter that claims equivalence between two response formats must map every
 *terminal* state of the source onto the target's vocabulary, not only the success
 ones. `finish_reason='length'` is the single normalized signal that a completion was
-cut at the token cap — camel documents it as the truncation contract and its
-`anthropic_model` maps `max_tokens` to it — so collapsing `status=='incomplete'` to
+cut at the token cap (camel documents it as the truncation contract and its
+`anthropic_model` maps `max_tokens` to it), so collapsing `status=='incomplete'` to
 `'stop'` tells the caller the model stopped on its own when it was actually
 truncated, and any continue/retry loop that keys on `'length'` never fires. A mapping
 enumerated over only `completed` is incomplete at exactly the state the caller most
 needs to distinguish. And when a format is converted on two paths (streaming and
 non-streaming), a terminal-state branch present on one path must exist on the other,
-or the same source state yields two different `finish_reason`s — and here the missing
+or the same source state yields two different `finish_reason`s. Here the missing
 streaming branch also drops the usage record the non-streaming path preserves.
 
 ## Trigger

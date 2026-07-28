@@ -9,7 +9,7 @@
 
 `documents` was only assigned inside a conditional branch but read
 unconditionally afterward; on the path where the branch didn't run, the
-function crashed with `UnboundLocalError` — taking down the RAG request
+function crashed with `UnboundLocalError`, taking down the RAG request
 entirely.
 
 ## Invariant violated
@@ -21,7 +21,7 @@ it constantly.
 
 ## Trigger
 
-A Cohere chat request built without the documents-populating branch running —
+A Cohere chat request built without the documents-populating branch running:
 an ordinary non-RAG call through the RAG-capable builder.
 
 ## Repro

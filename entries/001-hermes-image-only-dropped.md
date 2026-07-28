@@ -9,7 +9,7 @@
 
 The converter replaced the entire content list with an `"(empty message)"`
 placeholder whenever no non-blank TEXT block existed. For an image-only user
-turn the text-block list is empty, and `all([])` is vacuously `True` — so the
+turn the text-block list is empty, and `all([])` is vacuously `True`, so the
 guard fired and the image block was discarded, even though the API accepts
 image-only turns.
 

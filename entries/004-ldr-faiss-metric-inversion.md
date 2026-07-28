@@ -22,7 +22,7 @@ is the ground truth.
 
 ## Trigger
 
-Default configuration (cosine metric) — i.e., every user of collection
+Default configuration (cosine metric), i.e., every user of collection
 search. The bug made results *worse than random* (anti-ranked), which is the
 kind of failure that reads as "the RAG isn't finding anything."
 

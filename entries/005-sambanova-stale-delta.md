@@ -19,7 +19,7 @@ hazard on chunks that don't reassign it.
 
 ## Trigger
 
-Every streamed SambaNova response that ends with a usage chunk — duplicated
+Every streamed SambaNova response that ends with a usage chunk: duplicated
 tail text on essentially all streams.
 
 ## Repro

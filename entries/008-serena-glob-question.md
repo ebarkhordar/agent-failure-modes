@@ -12,13 +12,13 @@ did not match exactly one character as glob semantics require.
 
 ## Invariant violated
 
-`?` in a glob matches exactly one character — a spec-compliance contract.
+`?` in a glob matches exactly one character: a spec-compliance contract.
 When you implement a mini-language translator, its semantics are defined by
 the source language's spec, not by what the regex happens to do.
 
 ## Trigger
 
-Any file-matching pattern using `?` — silently wrong match sets for agent
+Any file-matching pattern using `?`: silently wrong match sets for agent
 file-search tools.
 
 ## Repro

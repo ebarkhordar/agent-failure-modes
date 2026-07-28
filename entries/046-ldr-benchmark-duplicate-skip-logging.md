@@ -19,8 +19,8 @@ A comment describes an invariant, and when a fix changes the invariant the comme
 
 ## Trigger
 
-Any correctness fix that changes what a dedup or cache key means: the branch that acted on the old meaning keeps running under the new one, silently, and every comment that explained the old meaning is now wrong. The follow-up is easy to skip because the code "works" — the tests pass and the numbers look right — while the observability gap and the false prose sit dormant until the next person touches the key.
+Any correctness fix that changes what a dedup or cache key means: the branch that acted on the old meaning keeps running under the new one, silently, and every comment that explained the old meaning is now wrong. The follow-up is easy to skip because the code "works" (the tests pass and the numbers look right) while the observability gap and the false prose sit dormant until the next person touches the key.
 
 ## Repro
 
-Docker against the merged branch: the duplicate-skip path now emits a `WARNING` on the `local_deep_research` namespace when a staged `query_hash` repeats, asserted by the two dedup tests capturing the Loguru record and checking `record["level"].name == "WARNING"`. The verification also surfaced a real test-isolation bug the maintainer caught in review — the fixture enabled the package log namespace and teardown only removed the temporary sink, leaking the enabled state into the shared logging fixture — fixed with a `finally`-guarded `logger.disable("local_deep_research")` so it holds even if a test raises.
+Docker against the merged branch: the duplicate-skip path now emits a `WARNING` on the `local_deep_research` namespace when a staged `query_hash` repeats, asserted by the two dedup tests capturing the Loguru record and checking `record["level"].name == "WARNING"`. The verification also surfaced a real test-isolation bug the maintainer caught in review (the fixture enabled the package log namespace and teardown only removed the temporary sink, leaking the enabled state into the shared logging fixture), fixed with a `finally`-guarded `logger.disable("local_deep_research")` so it holds even if a test raises.

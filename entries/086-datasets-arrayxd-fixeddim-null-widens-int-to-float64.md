@@ -22,7 +22,7 @@ column to `float64`, so every non-null integer value is re-typed to float, and a
 integer past float64's exact-integer range (2^53) is permanently altered. A
 `Array2D(shape=(1,2), dtype='int64')` column whose rows are `[[10,20]]`,
 `[[30,40]]`, `None` comes back from `to_dict()` as `[[10.0,20.0]]`, `[[30.0,40.0]]`,
-`[[nan,nan]]` — the ints are now floats and the null row is `[[nan,nan]]` rather than
+`[[nan,nan]]`: the ints are now floats and the null row is `[[nan,nan]]` rather than
 `None`, even on the python read path where `None` is representable.
 
 The dynamic-first-dim branch of the *same method* already does it correctly: it
@@ -32,21 +32,21 @@ the null slot, preserving the dtype and precision of every present row.
 object-array handling to the dynamic branch and left the fixed-dim branch on the old
 lossy cast. The result is an internal contradiction: `ds[0]['a']` (single-row python
 format) returns the integer `[[10,20]]` while `to_dict()['a'][0]` on the same column
-returns floats — the output type depends on whether some *other*, unrelated row is
+returns floats: the output type depends on whether some *other*, unrelated row is
 null.
 
 ## Invariant violated
 
 A null in one row is a per-row fact; it must not change the dtype or the values of
 the other, non-null rows. Widening an integer column to `float64` so a NaN sentinel
-fits corrupts exactly the values that make `int64` worth keeping — those above 2^53 —
+fits corrupts exactly the values that make `int64` worth keeping (those above 2^53)
 and changes the returned type on a read path (python/pylist) where the null could
 simply be `None`. Null-representation and value-preservation are separable concerns:
 insert the sentinel into the null positions without re-typing the positions that hold
 real data. When two branches of one method face the same null case and one preserves
 dtype while the other flattens it, the preserving branch is the proof that the
 flattening branch is a bug, not a representation tradeoff. (A dense numeric format
-that genuinely cannot hold `None` — numpy/tensor output — is a separate, legitimate
+that genuinely cannot hold `None`, numpy/tensor output, is a separate, legitimate
 `float64`+`nan` representation and is left unchanged; only the python read path,
 which can hold both ints and `None`, is corrected.)
 
@@ -63,7 +63,7 @@ enters the column.
 Docker at HEAD `521a590` (datasets 5.0.1.dev0, pyarrow 25.0.0, numpy 2.4.6). On
 `{'a': [[[10,20]],[[30,40]], None]}` typed `Array2D(shape=(1,2), dtype='int64')`,
 `to_dict()['a']` returns floats with `[[nan,nan]]` for the null row while
-`ds[0]['a']` returns the integer array — output depends on an unrelated row's
+`ds[0]['a']` returns the integer array: output depends on an unrelated row's
 nullness. The smoking gun: a row holding `9007199254740993` (2^53+1) round-trips as
 `9007199254740992.0`, the exact integer silently changed, purely because another row
 is `None`; the no-null control preserves it. The fix builds the python list for a

@@ -18,7 +18,7 @@ The two halves of the round trip use different serializers for one column. They 
 the overlap of their grammars: a double-quoted string and a bare number are both valid
 JSON and valid Python literals, so metadata built only from strings and numbers survives
 the mismatch and loads correctly. The divergence is exactly the three JSON scalars that
-have a different spelling in Python — the booleans and null — so the failure is confined
+have a different spelling in Python (the booleans and null), so the failure is confined
 to the values a caller is least likely to put in a hand-written fixture and most likely to
 have in real metadata (a `passed: False`, an optional field left `None`).
 
@@ -31,11 +31,11 @@ round trip then appears correct for every input in the intersection of the two g
 fails for every input in the symmetric difference. Because the intersection is the "obvious"
 data (strings, ints) and the difference is the "edge" data (bools, null, and anything whose
 textual form differs between the two encodings), the bug is structurally invisible to any
-test whose fixture stays inside the intersection — which a minimal fixture always does,
+test whose fixture stays inside the intersection, which a minimal fixture always does,
 because a minimal fixture is built from the simplest values that exercise the path.
 
 The reusable rule: a serializer choice on the write side is a contract the read side owes
-exactly, and "it parses" is not "it parses correctly" — `ast.literal_eval` on JSON text
+exactly, and "it parses" is not "it parses correctly": `ast.literal_eval` on JSON text
 succeeds silently for the common case and raises only on the tokens the two formats spell
 differently, so a load path can look interoperable for months. The correct fix reads the
 column with the inverse of what wrote it (`json.loads` to match `json.dumps`), keeping the

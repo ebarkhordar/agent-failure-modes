@@ -8,7 +8,7 @@
 ## Root cause
 
 Round-tripping a tool call through the ShareGPT/Hermes format silently
-dropped or mangled arguments containing quotes or booleans — the
+dropped or mangled arguments containing quotes or booleans: the
 serialization and deserialization sides disagreed about escaping.
 
 ## Invariant violated
@@ -19,7 +19,7 @@ a data-loss bug, not a format.
 
 ## Trigger
 
-Any tool call whose arguments contain quote characters or JSON booleans —
+Any tool call whose arguments contain quote characters or JSON booleans,
 i.e., ordinary real-world tool calls.
 
 ## Repro

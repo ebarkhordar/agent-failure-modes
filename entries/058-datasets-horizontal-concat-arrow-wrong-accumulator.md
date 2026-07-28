@@ -21,7 +21,7 @@ for name, col in zip(table.column_names, table.columns):
     new_pa_table = pa_table.append_column(name, col)   # iterable_dataset.py:1179
 ```
 
-The accumulator is `new_pa_table`, but the append reads `pa_table` — the variable
+The accumulator is `new_pa_table`, but the append reads `pa_table`, the variable
 that leaked out of the fetch loop above, still bound to the *last* source's table.
 So every iteration rebuilds `new_pa_table` from the wrong base, and the earlier
 sources' columns are never carried forward. For sources with columns `[a, b]` and
@@ -42,7 +42,7 @@ The reusable rule is narrower and sharper than "a typo": a loop variable from on
 loop that is still in scope in the next is a bound name that reads correctly and
 means the wrong thing. `pa_table` and `new_pa_table` differ by a prefix, both are
 `pa.Table`, and `x = pa_table.append_column(...)` is a grammatical, type-correct
-statement — nothing at the append site can tell you the base should have been the
+statement; nothing at the append site can tell you the base should have been the
 accumulator. The only witness is the fetch loop several lines up, where `pa_table`
 was last assigned. Whenever an accumulator loop lives below a fetch loop that binds
 a similarly named variable, the accumulator's identity is asserted only by which
@@ -57,7 +57,7 @@ correct path and stayed green over a fast path that dropped half its columns.
 
 An iterable `concatenate_datasets([...], axis=1)` whose result is consumed as Arrow,
 NumPy, or a tensor format (`.with_format("arrow"|"numpy"|"torch")`, or a downstream
-rebatch) — anything that routes through `_iter_arrow`. Plain iteration without a
+rebatch), anything that routes through `_iter_arrow`. Plain iteration without a
 columnar format takes the correct path and shows nothing.
 
 ## Repro

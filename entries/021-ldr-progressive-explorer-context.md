@@ -17,20 +17,20 @@
 Worker threads start with a fresh, empty Flask context; a search engine reading
 `current_app` or `g` inside a worker raises `RuntimeError: Working outside of
 application context`, which the surrounding `search_query` `except Exception`
-swallows and returns `[]` — the whole progressive-exploration step silently
+swallows and returns `[]`; the whole progressive-exploration step silently
 yields zero results.
 
 This is the identical defect [#5076](https://github.com/LearningCircuit/local-deep-research/pull/5076)
 fixed in `focused_iteration_strategy._execute_parallel_searches`. The catch:
 `FocusedIterationStrategy` drives **both** call sites on the same request with
-the same engine — `explorer.explore` reaches `_parallel_search`, and the
+the same engine: `explorer.explore` reaches `_parallel_search`, and the
 strategy separately calls `_execute_parallel_searches`. So #5076 fixed one path
 and left its sibling with the same context-propagation bug live.
 
 ## Invariant violated
 
 When a shared concurrency primitive is retrofitted to carry ambient request
-context, every call site of that primitive must be audited — not only the one
+context, every call site of that primitive must be audited, not only the one
 that surfaced the failure. A fix that propagates context at one fan-out point
 does not cover a sibling fan-out point reachable on the same request.
 
@@ -57,5 +57,5 @@ Entry [018](018-ldr-flask-context-parallel-search.md) closed with the rule
 "grep for the working comparator (`context_factory=`) and diff the two call
 sites." This is the same repo demonstrating why: the sibling that the grep
 would have surfaced was left unfixed, so the identical failure recurs one call
-site over. Grepping the primitive's every caller is not optional polish — it is
+site over. Grepping the primitive's every caller is not optional polish; it is
 the fix's completeness condition.

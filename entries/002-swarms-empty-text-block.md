@@ -16,12 +16,12 @@ was the ungated member of the same family.
 ## Invariant violated
 
 No content block sent to a provider may be empty when the provider documents
-non-empty as a requirement — and a guard applied to one block family must be
+non-empty as a requirement; and a guard applied to one block family must be
 applied to every block family with the same constraint.
 
 ## Trigger
 
-`LiteLLM(...).run('', img=...)` or `_prepare_messages(task=None, img=...)` —
+`LiteLLM(...).run('', img=...)` or `_prepare_messages(task=None, img=...)`:
 the public, documented image-only path.
 
 ## Repro

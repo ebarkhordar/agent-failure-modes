@@ -33,14 +33,14 @@ returned `None` out of the first subtree and never looks at the rest. A correct
 search tests each recursive call and only returns a hit, falling through on a miss:
 `r = get_val_by_key(v, key); if r is not None: return r`. The paired mutator
 `set_val_by_key` in the same file recurses into *all* subdicts with no early return,
-so the getter is plainly meant to be its inverse — the asymmetry between the two is
+so the getter is plainly meant to be its inverse; the asymmetry between the two is
 the frame: set reaches the key, get does not. `git log -G 'get_val_by_key' --follow`
 shows the function untouched since its 2021 introduction (`9caa74e5`, #1554): born
 with the bug, never fixed, never reverted.
 
 ## Invariant violated
 
-A recursive search that returns `rec(first_child)` directly is not a search — it
+A recursive search that returns `rec(first_child)` directly is not a search: it
 commits to the first subtree and cannot see its siblings, so the answer depends on
 iteration order over the children rather than on where the key actually is. To find a
 key that may live in any subtree, each recursive descent must be tested and only a
@@ -61,7 +61,7 @@ needed is a sentinel-returning recursive call whose result is never inspected.
 dict-valued entry encountered in iteration order. In autotuning, `scheduler.py`
 injects a tuned value via `nval = get_val_by_key(exp, key)`; when the lookup wrongly
 returns `None`, the guarding `if nval and ...` is skipped and the CLI arg is not
-overwritten, so — *conditional on the tuned key's subdict not being searched first* —
+overwritten, so (*conditional on the tuned key's subdict not being searched first*)
 the experiment runs with the user/default value instead of the value being tuned.
 
 ## Repro

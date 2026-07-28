@@ -26,7 +26,7 @@ def is_successful(self) -> bool:
     return self.success
 ```
 
-The comparison is evaluated and thrown away — an expression statement is a no-op — so
+The comparison is evaluated and thrown away (an expression statement is a no-op), so
 the method returns whatever `self.success` already held. That is whatever a prior
 `measure()` last wrote, or the class default `None` if `measure()` has not run or was
 run on a different threshold. The intended line is `self.success = self.score >=
@@ -44,7 +44,7 @@ computes into the field it reports, not merely evaluate the expression. A boolea
 comparison written as a statement has no effect; the method then silently reports the
 last value the field happened to hold. The failure is masked whenever the visible
 call order is `measure()` then `is_successful()`, because `measure()` sets `success`
-correctly — but the method exists precisely to be called *independently*: after the
+correctly. But the method exists precisely to be called *independently*: after the
 threshold is mutated, on a metric object reused or copied across test cases, or
 before `measure()`. In each of those it returns a stale or `None` verdict. When a
 large family of siblings shares one idiom (57 of 59) and a few omit its essential
@@ -54,7 +54,7 @@ sole-pattern differential is the evidence, not a matter of local style.
 ## Trigger
 
 Calling `is_successful()` on `TurnRelevancyMetric` or `TopicAdherenceMetric` in any
-order other than "immediately after a successful `measure()` at the same threshold" —
+order other than "immediately after a successful `measure()` at the same threshold":
 e.g. re-checking after changing `threshold`, reusing a metric instance, or querying
 the verdict before measurement. It returns `self.success` (default `None`) instead of
 the recomputed boolean.

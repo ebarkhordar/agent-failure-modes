@@ -9,7 +9,7 @@
 
 The stream handlers built `usage_metadata` from `input_tokens` and
 `output_tokens` only, discarding `cache_creation_input_tokens` and
-`cache_read_input_tokens` that the Anthropic SDK returns — in an adapter that
+`cache_read_input_tokens` that the Anthropic SDK returns, in an adapter that
 itself supports prompt caching. Cost accounting built on this metadata
 silently under-reports.
 
@@ -28,7 +28,7 @@ from the reported usage.
 
 Mocked SDK event stream (real SDK classes, since the handlers use isinstance
 checks): cache fields absent on main, present with the fix. Sibling
-integration `llms-bedrock-converse` already captured these fields — the
+integration `llms-bedrock-converse` already captured these fields: the
 maintainer-intent precedent.
 
 ## Note
