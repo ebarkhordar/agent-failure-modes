@@ -3,7 +3,10 @@
 - **Repo:** deepspeedai/DeepSpeed
 - **Surface:** `deepspeed/runtime/lr_schedules.py`, `LRRangeTest._continuous_interval` (the `/ self.step_size` at line 347) and `OneCycle._initialize_cycle` (`step_ratio = cycle_first_step_size / self.total_size` at line 486)
 - **Class:** error handling & success reporting
-- **Fix:** [PR #8166](https://github.com/deepspeedai/DeepSpeed/pull/8166) (in review)
+- **Fix:** [PR #8166](https://github.com/deepspeedai/DeepSpeed/pull/8166), merged
+  2026-07-29. The guard that shipped is wider than the one first proposed; the
+  review round that widened it is the most reusable part of this case and has its
+  own section below.
 
 ## Root cause
 
@@ -18,6 +21,13 @@ divisor without checking it is positive:
   where `total_size = cycle_first_step_size + cycle_second_step_size`. With both
   halves `0`, `total_size` is `0` and the constructor itself raises
   `ZeroDivisionError`.
+- `OneCycle` divides a *second* time, one frame further out, and that division has
+  its own zero. `_get_scale_factor` evaluates `x / self.step_ratio`, so a
+  `step_ratio` of `0.0` is as fatal as a `total_size` of `0`. `step_ratio` is
+  `cycle_first_step_size / total_size`, which is `0.0` whenever the first half is
+  `0` and the second half is positive. That config leaves `total_size` positive,
+  so it walks past the obvious guard and fails later, at the first `get_lr()`
+  before any `step()` and again at every cycle boundary.
 
 The neighboring `WarmupLR` / `WarmupCosineLR` constructors already validate their
 `warmup_num_steps` and raise a clear `ValueError`
@@ -41,12 +51,55 @@ unvalidated input is not merely missing a nicety, it converts a clear config err
 into an opaque crash at an unrelated call site (LRRangeTest crashes only on the
 first `step()`, far from where the bad value was supplied).
 
+## The guard that shipped is not the guard first proposed
+
+The first version of this fix validated `total_size`, the sum. A review bot on the
+PR pointed out that the sum is not what the code divides by, and it was right:
+`cycle_first_step_size=0` with a positive `cycle_second_step_size` keeps
+`total_size` positive, passes a sum-only check, and then divides by a `step_ratio`
+of `0.0` one frame later. A guard written against the arithmetic that happens to
+be on the line you are reading does not cover the arithmetic two lines down. The
+merged version validates each half on its own terms:
+
+```python
+if cycle_first_step_size <= 0:
+    raise ValueError(f"cycle_first_step_size must be positive, got {cycle_first_step_size}")
+if cycle_second_step_size < 0:
+    raise ValueError(f"cycle_second_step_size must be non-negative, got {cycle_second_step_size}")
+```
+
+Note that the two halves get different predicates, and that asymmetry is the point.
+A zero *second* half is a legal configuration, not a degenerate one: it gives
+`step_ratio == 1.0`, `x` stays below `1.0` in `_get_scale_factor`, and no division
+by zero is reachable. So the widened guard had to be widened asymmetrically, and
+the PR pins that with its own test asserting the zero-second-half schedule
+constructs and climbs.
+
+**The generalisable rule: when a guard protects a division, guard the operand the
+division actually uses, and check whether that operand is derived.** `total_size`
+is a sum, `step_ratio` is a quotient of it, and a validity condition on a sum is
+strictly weaker than the same condition on each addend. Every degenerate input that
+survives a sum check is one where the addends cancel out or one addend is zero, and
+those are exactly the inputs a downstream ratio will collapse on. The failure is
+biased toward looking fixed: the sum-only guard makes the loudest case (both halves
+zero, crash at construction) go away, and leaves the quieter one (first half zero,
+crash at first `get_lr()`) untouched, so a regression test written for the case that
+motivated the patch passes and the hole stays open.
+
+The secondary lesson is procedural: the hole was found by a reviewer, not by us,
+on a patch whose reproduction and differential were otherwise complete. A test
+suite written from the same mental model as the fix inherits the model's blind
+spot, and no amount of running it harder will surface a case the model never
+contained.
+
 ## Trigger
 
-`LRRangeTest(optimizer, lr_range_test_step_size=0)` followed by `.step()`, and
+`LRRangeTest(optimizer, lr_range_test_step_size=0)` followed by `.step()`;
 `OneCycle(optimizer, cycle_first_step_size=0, cycle_second_step_size=0)` at
-construction. Any valid (positive) config is unaffected: the guards fire only for
-values `<= 0`, which previously crashed or produced a meaningless schedule.
+construction; and `OneCycle(optimizer, cycle_first_step_size=0,
+cycle_second_step_size=100)`, which constructs fine and raises at the first
+`get_lr()`. Any valid config is unaffected: the guards fire only on a non-positive
+first half or a negative second half. A zero second half stays legal.
 
 ## Repro
 
@@ -61,3 +114,14 @@ unguarded schedulers are the remaining gap. The added CPU-only regression tests 
 beside the existing scheduler-validation tests and assert a `ValueError` naming the
 bad parameter; they crash or silently accept the misconfig on `master` and pass on
 the branch.
+
+Scope of what was executed: the two crashes above and the regression differential
+were run in that container. The zero-first-half shape was found in review and
+confirmed by reading `_get_scale_factor` against `_initialize_cycle`, then pinned
+by the parametrised test that shipped (`(0, 100)` is one of its cases), so it is
+covered by the merged suite rather than by a separate container run of our own.
+
+Merged upstream 2026-07-29. One caveat on what upstream CI proves here: the
+`modal-torch-latest` workflow selects a fixed set of test targets and has never
+executed `tests/unit/runtime/test_lr_schedulers.py`, so the passing checks on the
+PR are not evidence about these tests. The differential above is.

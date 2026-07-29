@@ -4,8 +4,9 @@
 - **Surface:** `deepspeed/runtime/lr_schedules.py`, `WarmupLR.__init__` (the
   `warmup_max_lr` fallback) feeding `_format_param`
 - **Class:** indexing, ordering & counting contracts
-- **Fix:** [PR #8171](https://github.com/deepspeedai/DeepSpeed/pull/8171)
-  (in review; self-discovered, no issue)
+- **Fix:** [PR #8171](https://github.com/deepspeedai/DeepSpeed/pull/8171), merged
+  2026-07-29 on a single approving review with no changes requested
+  (self-discovered, no issue)
 
 ## Root cause
 
@@ -61,3 +62,13 @@ group keeps its own base LR. The added regression test
 per-group cosine test) fails on `master` (`assert [0.1, 0.1] == [0.1, 0.2]`) and
 passes on the branch; the repo's formatting hooks (yapf, flake8, codespell) are
 clean.
+
+Merged upstream 2026-07-29. Worth recording next to
+[077](077-deepspeed-lr-scheduler-zero-step-divide.md), which touches the same file
+and merged in the same minute: this one-character deletion went in on one approving
+review with no changes requested, while 077's guard needed a round because its
+first version protected a sum instead of the operand the division used. The
+difference is not size. It is that a scalar-versus-list contract has one right
+answer that a two-group test exhibits directly, whereas a validity predicate
+quantifies over an input space, and a test written from the same model as the
+predicate only samples the part of that space the author already thought of.
