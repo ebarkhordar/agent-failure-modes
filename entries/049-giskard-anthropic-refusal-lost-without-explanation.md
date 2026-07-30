@@ -3,8 +3,12 @@
 - **Repo:** Giskard-AI/giskard-oss
 - **Surface:** `giskard/llm/translators/anthropic.py::AnthropicChatTranslator.from_anthropic`
 - **Class:** message-conversion boundary
-- **Fix:** [PR #2616](https://github.com/Giskard-AI/giskard-oss/pull/2616)
-  (in review; issue [#2615](https://github.com/Giskard-AI/giskard-oss/issues/2615))
+- **Fix:** none merged yet. Our [PR #2616](https://github.com/Giskard-AI/giskard-oss/pull/2616)
+  was closed unmerged on 2026-07-29 by a maintainer who folded this and the silent-param
+  drop of entry [041](041-giskard-pydantic-extra-ignore-drops-params.md) into a single
+  outside contribution, [PR #2623](https://github.com/Giskard-AI/giskard-oss/pull/2623),
+  which is open. Issue [#2615](https://github.com/Giskard-AI/giskard-oss/issues/2615) is
+  still open. The root cause below was not disputed.
 
 ## Root cause
 
