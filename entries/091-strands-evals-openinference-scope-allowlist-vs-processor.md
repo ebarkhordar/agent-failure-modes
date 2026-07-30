@@ -7,9 +7,13 @@
 - **Class:** message-conversion boundaries
 - **Report:** triaged publicly on
   [strands-agents/harness-sdk#3432](https://github.com/strands-agents/harness-sdk/issues/3432#issuecomment-5063589620)
-  (open; fix options adjudicated in the comment). No PR from us: the fault code lives
-  in `strands-agents/evals`, a repo this lane had not gated for contribution, so the
-  reproduction was contributed as triage rather than as a patch.
+  (fix options adjudicated in the comment). A maintainer asked for it to be refiled
+  against the repository that holds the code, and the reporter reposted the consolidated
+  diagnosis as [strands-agents/evals#331](https://github.com/strands-agents/evals/issues/331)
+  on 2026-07-29, which is where this is now tracked; #3432 was closed the same day. No
+  PR from us: the fault code lives in `strands-agents/evals`, a repo this lane had not
+  gated for contribution, so the reproduction was contributed as triage rather than as
+  a patch.
 
 ## Root cause
 
@@ -82,6 +86,8 @@ by the real Strands tracer, routed through the real
 `strands.telemetry.tracer` and carries `openinference.span.kind`, confirming that the
 processor converts the attributes and leaves the scope alone.
 
-Verified 2026-07-23 at HEAD `771a3fe`. Re-checked 2026-07-26: `771a3fe` is still the
-tip, and `SCOPES_OPENINFERENCE_FAMILY` still omits `SCOPE_STRANDS`, so the defect is
-live. Not fixed upstream at the time of writing.
+Verified 2026-07-23 at HEAD `771a3fe`. Re-checked 2026-07-30 at tip `0bf1252`: the
+filter is still at `openinference_session_mapper.py:96` and
+`SCOPES_OPENINFERENCE_FAMILY` still holds only the two `openinference.instrumentation.*`
+names, with `SCOPE_STRANDS` defined two lines above and left out, so the defect is live.
+Not fixed upstream at the time of writing.
