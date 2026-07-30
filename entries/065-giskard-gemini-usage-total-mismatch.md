@@ -3,8 +3,12 @@
 - **Repo:** Giskard-AI/giskard-oss
 - **Surface:** `libs/giskard-llm/src/giskard/llm/translators/google_chat.py` (`GoogleChatTranslator.from_google`)
 - **Class:** streaming & usage accounting
-- **Fix:** [PR #2622](https://github.com/Giskard-AI/giskard-oss/pull/2622) (in review;
-  self-discovered, no issue)
+- **Fix:** [PR #2653](https://github.com/Giskard-AI/giskard-oss/pull/2653) (open). A
+  maintainer opened it on 2026-07-29 carrying this change plus the lint formatting the
+  fork CI requires, and our [PR #2622](https://github.com/Giskard-AI/giskard-oss/pull/2622)
+  was closed unmerged in its favour once we had compared the two branches:
+  `google_chat.py` and `test_google_chat_return.py` are identical between them.
+  Self-discovered, no issue.
 
 ## Root cause
 
