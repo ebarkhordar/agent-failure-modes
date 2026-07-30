@@ -4,7 +4,8 @@
 - **Surface:** `inspect_ai/model/_compaction/edit.py` (`CompactionEdit` apply, `_apply_server_tool_clearing`)
 - **Class:** indexing, ordering & counting contracts
 - **Fix:** [PR #4529](https://github.com/UKGovernmentBEIS/inspect_ai/pull/4529)
-  (in review; issue [#4528](https://github.com/UKGovernmentBEIS/inspect_ai/issues/4528))
+  (merged 2026-07-30; issue [#4528](https://github.com/UKGovernmentBEIS/inspect_ai/issues/4528),
+  closed as completed)
 
 ## Root cause
 
