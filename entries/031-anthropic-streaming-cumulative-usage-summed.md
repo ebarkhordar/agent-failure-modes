@@ -3,7 +3,10 @@
 - **Repo:** microsoft/agent-framework
 - **Surface:** `python/packages/anthropic/agent_framework_anthropic/_chat_client.py` (streaming usage), aggregating into `python/packages/core/agent_framework/_types.py::add_usage_details`
 - **Class:** streaming & usage accounting
-- **Report:** [issue #7143](https://github.com/microsoft/agent-framework/issues/7143) (deterministic repro, fix offered)
+- **Report:** [issue #7143](https://github.com/microsoft/agent-framework/issues/7143)
+  (deterministic repro, fix offered; closed as completed 2026-07-30)
+- **Fix:** [PR #7162](https://github.com/microsoft/agent-framework/pull/7162), by another
+  contributor, merged 2026-07-30
 
 ## Root cause
 
@@ -75,3 +78,12 @@ are cumulative.
 Anthropic's published streaming example rather than on our own observation of the live
 wire. The unconditional case is the output-only one. Not bisected, so not claimed as a
 regression, and no user-facing billing discrepancy was quantified.
+
+## Resolution
+
+Fixed upstream by PR #7162, merged 2026-07-30, and the repair takes the invariant's side
+rather than the aggregator's: instead of teaching `add_usage_details` about Anthropic, it
+threads a per-stream `emitted_usage` accumulator into `_process_stream_event` and
+subtracts what has already been emitted, so `message_start` and `message_delta` both hand
+the shared aggregator increments. The convention mismatch is converted at the adapter, one
+layer below the helper that assumed it. The issue was closed as completed the same day.
