@@ -3,8 +3,9 @@
 - **Repo:** camel-ai/camel
 - **Surface:** `camel/models/anthropic_model.py`, the two `stop_reason` to `finish_reason` mappings, non-streaming in `_convert_anthropic_to_openai_response` (the `else` branch around line 712) and streaming in `_convert_anthropic_stream_to_openai_chunk` (the `message_delta` branch around line 940)
 - **Class:** message-conversion boundaries
-- **Fix:** [PR #4210](https://github.com/camel-ai/camel/pull/4210) (in review; issue
-  [#4209](https://github.com/camel-ai/camel/issues/4209))
+- **Fix:** [PR #4210](https://github.com/camel-ai/camel/pull/4210) (merged 2026-07-31
+  by `fengju0213`; issue [#4209](https://github.com/camel-ai/camel/issues/4209),
+  closed as completed by the merge)
 
 ## Root cause
 
