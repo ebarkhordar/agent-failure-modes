@@ -7,8 +7,11 @@
   (deterministic repro, fix suggested). A maintainer closed it on 2026-07-29 and pointed
   at [PR #2623](https://github.com/Giskard-AI/giskard-oss/pull/2623), an outside
   contributor's change that carries the warning asked for here together with the refusal
-  fix of entry [049](049-giskard-anthropic-refusal-lost-without-explanation.md). That PR
-  is open and unmerged, so the silence is still in the shipped code.
+  fix of entry [049](049-giskard-anthropic-refusal-lost-without-explanation.md). #2623 was
+  itself closed unmerged on 2026-07-31, in favour of
+  [PR #2647](https://github.com/Giskard-AI/giskard-oss/pull/2647), which a maintainer
+  opened carrying the same change plus the formatting this repo's CI requires. #2647 is
+  open, so the silence is still in the shipped code.
 
 ## Root cause
 
