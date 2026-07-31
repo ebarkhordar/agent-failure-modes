@@ -2,14 +2,18 @@
 
 - **Repo:** LearningCircuit/local-deep-research
 - **Surface:** `src/local_deep_research/security/ssrf_validator.py`, `validate_url`
-  (`:326-328`), reached from `is_safe_custom_llm_endpoint`; against the ungated call at
-  `web/routes/research_routes.py:657`
+  (`:326-328`), reached from `is_safe_custom_llm_endpoint`; against the call at
+  `web/routes/research_routes.py:657`, which was ungated when this was reported
 - **Class:** error handling & success reporting
 - **Report:** reproduced publicly on
   [issue #5220](https://github.com/LearningCircuit/local-deep-research/issues/5220#issuecomment-5080275355)
-  (open). Filed as triage rather than a patch: the correct arm (fail open on resolution
-  failure, gate the check on the provider, or both) is a security policy decision the
-  maintainer owns, not a defect with one obvious repair.
+  (closed as completed 2026-07-30). Filed as triage rather than a patch: the correct arm
+  (fail open on resolution failure, gate the check on the provider, or both) is a security
+  policy decision the maintainer owns, not a defect with one obvious repair.
+- **Fix:** partial.
+  [PR #5255](https://github.com/LearningCircuit/local-deep-research/pull/5255), by another
+  contributor, merged 2026-07-30, took the second arm only; the conflation in the
+  validator is unchanged. See "Resolution" below.
 
 ## Root cause
 
@@ -27,9 +31,9 @@ except socket.gaierror:
 forbidden" from "I could not find out", so a container that has lost outbound DNS
 rejects every hostname-based endpoint with `Invalid custom endpoint URL`.
 
-Two independent facts turn that conflation from a corner case into a total outage of the
-feature. First, the endpoint is validated on every research run regardless of provider:
-`custom_endpoint` is added to the submitted form at
+Two independent facts turned that conflation, at the commit reported, from a corner case
+into a total outage of the feature. First, the endpoint was validated on every research
+run regardless of provider: `custom_endpoint` is added to the submitted form at
 `web/static/js/components/research.js:2670` unconditionally, and
 `research_routes.py:657` validates it with no guard, while the required-field check
 eighteen lines above at `:639` *is* gated on `model_provider == "openai_endpoint"`.
@@ -75,10 +79,12 @@ so clearing the field is the workaround).
 
 ## Trigger
 
-Any deployment where the container cannot reach a DNS resolver, with any LLM provider
-selected. Every research run fails with `Invalid custom endpoint URL`, naming a URL the
-user may never have configured and the run would never contact. An IP literal endpoint
-is unaffected, since no resolution is attempted.
+Any deployment where the container cannot reach a DNS resolver. At the reported commit
+this held with any LLM provider selected, and every research run failed with `Invalid
+custom endpoint URL`, naming a URL the user may never have configured and the run would
+never contact; since PR #5255 it is confined to `openai_endpoint`, where the URL is at
+least one the user chose. An IP literal endpoint is unaffected in both cases, since no
+resolution is attempted.
 
 ## Repro
 
@@ -100,5 +106,27 @@ than to address policy: the same validator, the same commit, and the only input 
 changes verdict is the one that needs DNS.
 
 Verified 2026-07-25 at HEAD `abe62643`. Re-checked 2026-07-26 at HEAD `ffba6176`:
-`validate_url` still returns `False` from the `socket.gaierror` handler at `:326-328`,
-so the defect is live. Not fixed upstream at the time of writing.
+`validate_url` still returns `False` from the `socket.gaierror` handler at `:326-328`.
+
+## Resolution
+
+PR #5255 merged 2026-07-30 and the owner closed #5220 as completed the same day. Its
+source change is entirely in `web/routes/research_routes.py`: `custom_endpoint` is read
+only when `model_provider == "openai_endpoint"`, and the validation call at `:657`
+carries the same guard. That removes the amplifier described above, so the outage no
+longer reaches users on lmstudio, ollama or any other provider, and it was the right
+first move because it is the arm that needed no security judgement.
+
+The predicate itself was not touched. Re-checked at `main` `93433917`:
+`ssrf_validator.py:326-328` still returns `False` from the `socket.gaierror` handler, so
+for a user who has actually selected `openai_endpoint`, a container that loses its
+resolver still reports `Invalid custom endpoint URL` about an address that is not
+invalid. The population is smaller; the diagnostic still names the wrong cause.
+
+That split is the part worth keeping. Two defects reached users through one symptom, and
+only one of them was a defect in the component the symptom named. Fixing the reachability
+retires the report, closes the issue, and satisfies every observer, while the confusion
+between "denied" and "could not determine" stays in the security layer where it will be
+reached again by the next caller. When a report is resolved by narrowing who can reach the
+faulty code, the fault has not been adjudicated, and nothing in the closed issue records
+that it is still there.
