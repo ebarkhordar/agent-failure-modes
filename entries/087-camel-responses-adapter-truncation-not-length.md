@@ -5,8 +5,9 @@
   `response_to_chat_completion` (non-streaming) and the streaming
   `response.completed` handler
 - **Class:** message-conversion boundaries
-- **Fix:** [PR #4216](https://github.com/camel-ai/camel/pull/4216) (in review;
-  issue [#4215](https://github.com/camel-ai/camel/issues/4215))
+- **Fix:** [PR #4216](https://github.com/camel-ai/camel/pull/4216), merged
+  2026-07-31 by `fengju0213`; issue
+  [#4215](https://github.com/camel-ai/camel/issues/4215) closed as completed
 
 ## Root cause
 
@@ -58,3 +59,21 @@ usage); the fix adds the `status`/`incomplete_details` mapping to the non-stream
 path and an `incomplete`/`failed` branch that preserves usage to the streaming path,
 each covered by its own test. The added suite has 7 tests passing on the branch; 4
 fail against the master adapter.
+
+## As merged
+
+The maintainer amended the branch before merging (`f2db878a`) and the amendment
+sharpens the invariant rather than softening it. The submitted fix treated
+`incomplete` and `failed` as one class, mapping both through
+`_finish_reason_from_response`. The merged version narrows that mapping to
+`status == 'incomplete'` and gives `response.failed` its own branch that raises
+`RuntimeError` carrying the response's `error.code` and `error.message`.
+
+The distinction is that `incomplete` and `failed` are not the same kind of terminal
+state. A truncated call produced output and needs a `finish_reason` the caller can
+key on; a failed call produced an error, and giving it *any* `finish_reason` hands
+the caller a value from the success vocabulary for a request that did not succeed,
+which is the same collapse this entry is about, one level over. So the rule is not
+"map every terminal state onto the target's vocabulary" but "map every terminal state
+that the target's vocabulary can actually express, and surface the rest as errors".
+An adapter's mapping table and its error path are both part of the contract.
