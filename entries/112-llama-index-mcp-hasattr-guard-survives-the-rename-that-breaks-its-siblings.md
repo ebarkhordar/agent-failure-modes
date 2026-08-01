@@ -5,7 +5,7 @@
   `llama-index-integrations/tools/llama-index-tools-mcp/llama_index/tools/mcp/base.py:86`
   (`McpToolSpec.fetch_resources`), against the two import sites that raise first,
   `client.py:21` and `utils.py:4`; all three under `mcp>=2`
-- **Class:** message-conversion boundaries
+- **Class:** dependency & runtime contract drift
 - **Report:** reproduced publicly on
   [issue #22515](https://github.com/run-llama/llama_index/issues/22515#issuecomment-5139459991)
   (open, filed by another user asking for `mcp` 2.x support). No PR from us: the reporter
@@ -123,3 +123,21 @@ all.
 Verified at `main` `c864fcfa`, read 2026-07-28. Re-checked 2026-07-31: `main` is still
 `c864fcfa`, the guard at `base.py:86` is unchanged and `pyproject.toml:44` still declares
 `mcp>=1.24.0,<2`. Reported, not fixed upstream at the time of writing.
+
+## Update, 2026-08-01
+
+An outside contributor opened
+[PR #22535](https://github.com/run-llama/llama_index/pull/22535), which is open and not
+merged, so nothing has changed in the shipped package and the guard still returns an empty
+list under `mcp>=2`. It supports 2.x alongside 1.x rather than bumping the floor, isolating
+the differences in a `_compat` module, and it replaces the `hasattr` at `base.py:86` with a
+read that tries both spellings of the field. Its comment on that hunk states the reason as
+template resources otherwise being silently dropped, which is the same defect this entry
+describes, reached independently.
+
+The diff also names a fourth break this entry did not: `Tool.inputSchema` becomes
+`input_schema`, read at `base.py:139`. That read is unguarded, so it raises rather than
+degrading, and it is therefore the kind of break a port is driven by. The split is the
+entry's own point restated by the fix. Of the two field renames in the same file, the
+unguarded one announced itself and the guarded one had to be found by reading, and only the
+guarded one had been silently returning nothing to users the whole time.
