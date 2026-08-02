@@ -26,12 +26,18 @@ server-controlled `delay-seconds` is honored unbounded.
 
 ## Invariant violated
 
-Two code paths that consume the same external grammar must implement the same
-parse. Hardening one does not protect the other, and the two drift precisely
+Two code paths that consume the same external grammar must accept the same
+grammar. Hardening one does not protect the other, and the two drift precisely
 because each reads as correct on its own: the defensive `try` in `stream()` gives
-no hint that `request()` lacks it. When a client library already contains the
-correct handling once, the bug is not a missing idea, it is one call site that
-fell out of an existing convention, and the diff between the two is free to find.
+no hint that `request()` lacks it. When a client library already handles the
+grammar once, the bug is not a missing idea, it is one call site that fell out of
+an existing convention, and the diff between the two is free to find.
+
+The sibling is where to start, though, not an oracle. `stream()`'s own guard
+tests the parsed delay for truthiness, so it drops the legal `Retry-After: 0`,
+and copying it into `request()` verbatim imported that defect until a reviewer
+caught it. Reading the sibling tells you the idea is not missing. It does not
+tell you the sibling is right.
 
 The narrower rule: a retry path must not crash on an input the spec it implements
 explicitly permits. A well-formed `Retry-After` the client exists to honor should
@@ -56,5 +62,13 @@ mocking on the request path, `__file__` provenance confirmed at
 
 Filed issue-first per the repo's CONTRIBUTING triage gate, then followed by the
 implementation in [PR #5745](https://github.com/IBM/mcp-context-forge/pull/5745),
-which guards `request()` with the same `except ValueError` as `stream()` and
-clamps both 429 sleeps to `self.max_delay`.
+which wraps `request()`'s `float(retry_after)` in `except ValueError` so a
+non-numeric value falls through to the existing exponential backoff.
+
+Review then pushed the fix past the sibling it was copied from. `stream()` tests
+the parsed delay for truthiness, and `Retry-After: 0` is a legal `delay-seconds`
+value meaning retry at once, so mirroring that test sent 0 to backoff instead.
+The guard now reads `is not None`, with a regression test pinning that
+`Retry-After: 0` still sleeps zero and retries. `stream()` still carries the
+truthiness defect on `main`. The unclamped 429 sleeps described above are out of
+scope for this PR and remain open upstream.

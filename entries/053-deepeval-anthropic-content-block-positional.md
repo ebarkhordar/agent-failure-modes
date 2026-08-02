@@ -17,10 +17,17 @@ positional access raises `AttributeError`. That exception is swallowed by the
 enclosing `safe_extract_output_parameters`'s bare `except`, which returns an empty
 `OutputParameters()`, so the span records `output='NA'`, no token counts, and
 `tools_called=None`, and the child tool spans are skipped. The `ToolUseBlock`
-handling already present later in the same function is dead code, because the
-`content[0].text` line above it raises before control ever reaches it. An earlier
-revision guarded `content[0]` by type; a later schema-alignment commit
-(`c088f1c0d`) collapsed the guard to the unconditional `.text` access.
+handling already present later in the same function is unreachable for exactly
+the responses that need it most, a tool-use-first turn, because the
+`content[0].text` line above it raises before control gets there. It still runs
+when a `TextBlock` happens to come first.
+
+An earlier revision was not positionally safe either, but it crashed on a smaller
+set. It branched on whether the response contained any `ToolUseBlock` at all,
+falling back to `content[0].to_json()` when it did, so a tool-use-first turn
+survived while thinking-first with no tools already failed. The schema-alignment
+commit `c088f1c0d` ("chore: adhere to the current schema") dropped that arm and
+left the unconditional `.text` access, widening the crash to tool-use-first too.
 
 ## Invariant violated
 

@@ -1,17 +1,20 @@
 # A two-key delta meets an if/elif dispatcher, and the signature never survives
 
 - **Repo:** strands-agents/harness-sdk
-- **Surface:** `strands/models/gemini.py::GeminiModel._format_chunk`, against
+- **Surface:** `strands/models/gemini.py::GeminiModel._format_chunk` and
+  `GeminiModel.stream`, against
   `strands/event_loop/streaming.py::handle_content_block_delta`
 - **Class:** streaming & usage accounting
 - **Fix:** [PR #3306](https://github.com/strands-agents/harness-sdk/pull/3306) (in review)
 
 ## Root cause
 
-Gemini issues a thought signature on a reasoning part, and the adapter is built
-to round-trip it: `gemini.py:401` base64-encodes the signature on the way in, and
-`_format_request_content_part` reads it back out on the next turn to send it
-along with the reasoning text. Both ends are correct. The middle drops it.
+Gemini issues a thought signature alongside a reasoning turn, sometimes on the
+part carrying the reasoning text and sometimes on a separate part with no text at
+all, and the adapter is built to round-trip it: `gemini.py:401` base64-encodes the
+signature on the way in, and `_format_request_content_part` reads it back out on
+the next turn to send it along with the reasoning text. Both ends are correct.
+Everything between them loses it, in two independent places.
 
 `_format_chunk` builds a single `reasoningContent` delta carrying both a `text`
 key and a `signature` key. The shared aggregator dispatches on key presence:
@@ -29,6 +32,19 @@ block, and the read-back on the next turn does
 `content["reasoningContent"]["reasoningText"].get("signature")` and gets `None`
 every time. The adapter encodes a signature, throws it away in aggregation, then
 looks for it again and finds nothing.
+
+That is the first of two losses on the same field, and the second never reaches
+the dispatcher at all. `stream()` gates the whole reasoning emission on
+`if part.text:` (`gemini.py:570`), so when Gemini attaches the signature to a part
+carrying no text of its own, `_format_chunk` is never called for that part: no
+delta is built, nothing is encoded, and the `if/elif` above has nothing to
+mis-dispatch. Google's thought-signature guidance documents that shape and
+`google-genai` 2.13.0 carries it in its own stream tests. We did not find this. A
+reviewer did, on 2026-07-21, and reproduced it against the same base commit this
+entry measured (`signature deltas=[]`, the next request replaying
+`thought_signature=None`). It is fixed in `aff5179`, which emits the signature
+whenever a part carries `thought_signature` and is not a function call, opening a
+`reasoning_content` block first if none is open.
 
 Across every adapter that builds a `reasoningContent` delta (`anthropic`,
 `bedrock`, `gemini`, `llamacpp`, `openai`, `openai_responses`), Gemini was the
@@ -118,3 +134,10 @@ through the branch produces `'czE=czI='`, two base64 values joined rather than o
 signature. Whether Gemini emits that shape could not be checked without live
 calls. On `main` the same input yields no signature at all, so it is not a case
 that works today.
+
+**Corrected 2026-08-02.** As first written this entry localised the whole defect
+to the shared aggregator and said both adapter ends were correct. That was wrong.
+A second, independent drop sat in `stream()` on the same base commit, and a
+reviewer found it four days after this was published. The miss is this entry's own
+lesson turned on itself: we checked what the middle did with the delta the adapter
+emitted, and never asked which parts the adapter declined to emit a delta for.
