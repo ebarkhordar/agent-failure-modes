@@ -55,8 +55,7 @@ Clean Docker container against current `main` (SQLAlchemy 2.0.51), with
 `/api/download-bulk` endpoint against a real on-disk SQLite database and asserts
 the row is `PROCESSING` by the time `download_resource` is called. It fails on
 unfixed `main`, where the row is still `PENDING` at download time, and passes on
-the branch. Existing suites stay green (609 passed across the library-routes and
-download-service tests).
+the branch.
 
 **Not verified:** the collision was not reproduced with two real OS threads
 under load. The test asserts the claim-before-download invariant that closes the
@@ -64,3 +63,36 @@ window rather than timing an actual double download, so the window is executed
 and observed while the collision itself is inferred from it. No Postgres backend
 was exercised (LDR uses per-user SQLite; a conditional UPDATE claim is
 backend-portable).
+
+## What the review corrected
+
+Everything above describes the first revision of the fix, and taking a claim at
+the claim site to be the end of the story is exactly the mistake this entry used
+to make. The maintainer verified the mechanism (the key test does fail on `main`
+and pass on the branch, the claim commits before the download, no transaction is
+held across network I/O), then checked it against the other writers of
+`LibraryDownloadQueue.status`. The pre-pass `queue_research_downloads` reset an
+in-flight row straight back to `PENDING`, so the second of the two scenarios the
+changelog named still double-downloaded. A later round found two more reset
+paths (`queue_all_undownloaded`, `download_source`) and a resource lookup sitting
+outside the protective `try`, where a null title stranded a claimed row in
+`PROCESSING`. What merged is three rounds larger than the diff this entry
+originally described.
+
+The reason our own tests missed the first of those is the reusable part. They
+mocked `queue_research_downloads`, which is the writer that un-claims the row, so
+the one function that decides whether the claim survives was stubbed out of the
+test written to prove the claim survives. A mocked writer is not a writer that
+agrees with you, it is a writer that has been prevented from contradicting you,
+and the two are indistinguishable from inside a green run.
+
+An earlier revision of this entry also reported that the existing suites stayed
+green. That held for the first revision and not for what merged: two existing
+tests asserted the ORM attribute assignment that the conditional UPDATE no longer
+performs, and they had to be rewritten to assert the values the UPDATE writes.
+The absolute pass count moved by two and hid the swap completely, which is why
+the comparison that found it was per test id rather than per count.
+
+Entry [045](045-ldr-download-queue-claim-check-then-act.md) covers the claim
+protocol those rounds produced, including the one writer that was deliberately
+left unguarded and the reason guarding it would have been a regression.
