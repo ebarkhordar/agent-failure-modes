@@ -33,3 +33,5 @@ in the PR fails on main, passes with the fix.
 
 `all(...)` over a possibly-empty list inside a "does anything real exist"
 guard is the recurring shape here. Check the empty case explicitly.
+
+Found and fixed by my collaborator [@AmirF194](https://github.com/AmirF194).

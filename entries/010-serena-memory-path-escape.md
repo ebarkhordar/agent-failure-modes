@@ -26,3 +26,7 @@ A memory name that is absolute or contains traversal segments.
 
 Regression tests in the PR: absolute and escaping names rejected, normal
 names unaffected.
+
+## Note
+
+Found and fixed by my collaborator [@AmirF194](https://github.com/AmirF194).

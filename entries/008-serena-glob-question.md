@@ -25,3 +25,7 @@ file-search tools.
 
 Regression test in the PR: fails on the old translation, passes on the fix.
 Reachability traced from the user-facing tool to the fault before filing.
+
+## Note
+
+Found and fixed by my collaborator [@AmirF194](https://github.com/AmirF194).

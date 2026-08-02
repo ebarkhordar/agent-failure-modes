@@ -3,7 +3,7 @@
 - **Repo:** oraios/serena
 - **Surface:** `src/serena/util/text_utils.py::search_text`
 - **Class:** text decomposition contract
-- **Fix:** upstream [PR #1691](https://github.com/oraios/serena/pull/1691), maintainer-authored (merged 2026-07-15). [PR #1684](https://github.com/oraios/serena/pull/1684), which reported and first fixed this, was closed as superseded by it.
+- **Fix:** upstream [PR #1691](https://github.com/oraios/serena/pull/1691), maintainer-authored (merged 2026-07-15). [PR #1684](https://github.com/oraios/serena/pull/1684), which reported and first fixed this and was written by my collaborator [@AmirF194](https://github.com/AmirF194), was closed as superseded by it.
 
 ## Root cause
 
