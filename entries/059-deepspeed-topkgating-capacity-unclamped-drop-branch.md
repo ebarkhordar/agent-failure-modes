@@ -3,7 +3,7 @@
 - **Repo:** deepspeedai/DeepSpeed
 - **Surface:** `deepspeed/moe/sharded_moe.py`: `topkgating` (`drop_policy='probs'`) and `top1gating` (`drop_tokens=True`)
 - **Class:** initialization & control flow
-- **Fix:** [PR #8155](https://github.com/deepspeedai/DeepSpeed/pull/8155) (in review)
+- **Fix:** [PR #8155](https://github.com/deepspeedai/DeepSpeed/pull/8155) (merged 2026-08-02)
 
 ## Root cause
 
@@ -64,13 +64,13 @@ source.
   drop_policy='probs')` raises `RuntimeError: selected index k out of range`, and
   `top1gating(logits[8, 2], capacity_factor=4, drop_tokens=True)` raises the same
   error via `_top_idx`.
-- With the clamp, both return; the dispatch buffer's capacity dimension equals
-  `num_tokens`, and no token that should route is dropped (reducing capacity to
-  `num_tokens` cannot remove a slot a token needed, since there are never more
-  routed tokens than tokens).
-- Two regression tests added under `tests/unit/moe/test_moe.py`, one per branch;
-  both fail on the unpatched source and pass with the fix, and the pre-existing
-  gating tests still pass.
+- With the fix, both return, and the dispatch buffer's capacity dimension stays at
+  the configured `capacity` (16 for the two cases above), not at `num_tokens`.
+- Four regression tests added under `tests/unit/moe/test_moe.py`: one per crashing
+  branch, one pinning that `drop_policy='position'` still pads to `min_capacity`,
+  and one pinning that `top1gating`'s dispatch width stays divisible by the tensor
+  parallel size. The first two fail on the unpatched source; all four pass with the
+  fix, and the pre-existing gating tests still pass.
 
 The two `torch.topk(..., dim=0)` call sites were enumerated by parsing the module
 with `ast` rather than grep: exactly the two above. `torch.topk(gates, k=k, dim=1)`
@@ -84,6 +84,26 @@ established `capacity > num_tokens` as a condition worth guarding.
 
 ## Fix
 
-Apply the same `capacity <= num_tokens` clamp #5353 introduced, to the two drop
-branches it missed. The clamp is a no-op whenever capacity already fits, so it
-changes no behavior on any configuration that did not already crash.
+Bound the `k` handed to `torch.topk(..., dim=0)` by the token dimension, in a local
+`selection_capacity`, and leave `capacity` itself untouched:
+
+```python
+selection_capacity = min(capacity, torch.tensor(gates.size(0)).to(capacity.device))
+_, capacity_indices = torch.topk(topk_masked_gates, k=selection_capacity, dim=0, sorted=False)
+```
+
+The first version of this PR carried #5353's clamp over verbatim, reassigning
+`capacity = min(capacity, num_tokens)` in both drop branches, and the maintainer
+([tohtana](https://github.com/deepspeedai/DeepSpeed/pull/8155#pullrequestreview-4821603998))
+rejected it: `capacity` is not only the `topk` bound, it also sizes the dispatch
+buffer downstream, and `drop_tokens()` requires that width to be divisible by the
+tensor parallel size while `drop_policy='position'` pads it up to `min_capacity`.
+Shrinking `capacity` to fix the crash therefore breaks tensor parallel MoE on
+configurations that never crashed.
+
+That correction is the reusable half of this entry. The invariant is real and stated
+correctly (`k <= size` on every `topk(dim=0)` site), but a value that satisfies an
+invariant at one use site is not free to change at its other use sites. `capacity`
+carries two jobs here, selection bound and buffer width, and only the first one has
+the bound. The safe repair for an overloaded value is a new local for the
+constrained use, never a narrowing of the shared one.
