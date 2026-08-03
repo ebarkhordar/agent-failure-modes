@@ -7,7 +7,7 @@
   `kt-kernel/python/experts.py:340-356` and the four call sites in
   `third_party/sglang/python/sglang/srt/layers/moe/kt_ep_wrapper.py:1004`, `:1171`, `:1419`,
   `:1571`
-- **Class:** initialization & control flow
+- **Class:** interface conformance across implementations
 - **Report:** triaged publicly on
   [issue #2113](https://github.com/kvcache-ai/ktransformers/issues/2113#issuecomment-5146208615)
   (open, filed by another user running MiniMax M2.7). No PR from us: the repair is either a
