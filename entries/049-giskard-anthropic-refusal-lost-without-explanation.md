@@ -3,21 +3,29 @@
 - **Repo:** Giskard-AI/giskard-oss
 - **Surface:** `giskard/llm/translators/anthropic.py::AnthropicChatTranslator.from_anthropic`
 - **Class:** message-conversion boundary
-- **Fix:** none merged yet. Our [PR #2616](https://github.com/Giskard-AI/giskard-oss/pull/2616)
-  was closed unmerged on 2026-07-29 by a maintainer who folded this and the silent-param
-  drop of entry [041](041-giskard-pydantic-extra-ignore-drops-params.md) into a single
-  outside contribution, [PR #2623](https://github.com/Giskard-AI/giskard-oss/pull/2623).
-  #2623 was in turn closed unmerged on 2026-07-31 in favour of
-  [PR #2647](https://github.com/Giskard-AI/giskard-oss/pull/2647), a maintainer's copy of
-  the same change with the formatting this repo's CI requires; #2647 is open. Issue
-  [#2615](https://github.com/Giskard-AI/giskard-oss/issues/2615) is still open. The root
-  cause below was not disputed at any point in that chain.
+- **Fix:** merged upstream in
+  [PR #2647](https://github.com/Giskard-AI/giskard-oss/pull/2647) on 2026-08-03, which
+  also closed issue [#2615](https://github.com/Giskard-AI/giskard-oss/issues/2615) as
+  completed. Our [PR #2616](https://github.com/Giskard-AI/giskard-oss/pull/2616) was
+  closed unmerged on 2026-07-29 by a maintainer who folded this and the silent-param drop
+  of entry [041](041-giskard-pydantic-extra-ignore-drops-params.md) into a single outside
+  contribution, [PR #2623](https://github.com/Giskard-AI/giskard-oss/pull/2623). #2623 was
+  in turn closed unmerged on 2026-07-31 in favour of #2647, a maintainer's copy of the same
+  change with the formatting this repo's CI requires. The root cause below was not disputed
+  at any point in that chain, and the merged tests assert exactly the two shapes it named as
+  invisible.
 
 ## Root cause
 
+Described here as it stood before #2647 merged; the repro table and the ref it pins
+(`175670e`) are pre-fix.
+
 Giskard detects a model refusal with one rule, defined once and consumed by the
 workflow layer: a completion is a refusal when `finish_reason == 'refusal'` or
-`message.refusal is not None`. Three provider adapters feed that rule. OpenAI
+`message.is_refusal`, the latter being true whenever `message.refusal is not None`
+(it has a second branch, for a `RefusalContent` block, which the Anthropic inbound
+path cannot produce because its block converter emits only text and tool calls).
+Three provider adapters feed that rule. OpenAI
 satisfies it directly, because the API returns `message.refusal`. Google
 satisfies it by mapping its `refusal` finish reason through `FINISH_REASON_MAP`
 and carrying the reason in `finish_message`. Anthropic satisfies it only by
@@ -83,3 +91,28 @@ suite.
 **Not verified:** the live Anthropic API was not called. The claim is confined to
 what `from_anthropic` does with each SDK-valid refusal shape, not to which shape
 the API emits most often in production.
+
+## What shipped
+
+#2647 replaces the `explanation`-only read with a fallback chain, so the two failing
+rows above now detect:
+
+```python
+if raw.stop_reason == "refusal":
+    details = raw.stop_details
+    refusal_out = (
+        (details.explanation or details.category) if details is not None else None
+    ) or "refusal"
+```
+
+The trailing `or "refusal"` is the part that matters to the invariant: it makes the
+field unconditionally non-`None` whenever the provider signalled a refusal, so
+detection no longer depends on any optional field being populated. Both previously
+invisible shapes are pinned by new tests, one for `stop_details = None` and one for
+`category` without `explanation`.
+
+`FINISH_REASON_MAP` was not touched, so `refusal` still maps to `finish_reason
+== "stop"` and the merged test asserts that. That is not a contradiction of the
+analysis above, it is the reason the fix had to go where it did: the
+`finish_reason == 'refusal'` half of the detection rule is unreachable on this
+path by design, which leaves `message.refusal` as the only carrier available.
