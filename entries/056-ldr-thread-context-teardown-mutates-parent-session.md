@@ -1,7 +1,7 @@
 # Building a worker's context pops an app context on the parent thread, firing a teardown that rolls back the parent's session
 
 - **Repo:** LearningCircuit/local-deep-research
-- **Surface:** `utilities/thread_context.py::thread_context`, against
+- **Surface:** `utilities/threading_utils.py::thread_context`, against
   `web/app_factory.py::cleanup_db_session`
 - **Class:** concurrency & context propagation
 - **Fix:** [PR #5137](https://github.com/LearningCircuit/local-deep-research/pull/5137) (merged 2026-07-18; prerequisite for
