@@ -38,7 +38,9 @@ even a None-versus-NaN preservation story to justify it.
 `with_format("numpy")` (and the batch and column extractor paths that share this
 function) on a flat homogeneous numeric column must yield a numeric ndarray, with
 `nan` for nulls, never `dtype=object`. Object promotion is reserved for `array` /
-`ArrayXD` columns whose null rows appear as scalar `nan` among per-row ndarrays. The
+`ArrayXD` columns with a null row among per-row ndarrays (as merged, that null may
+arrive as scalar `nan` or as `None`, and the row shape is compared against the first
+ndarray element rather than the first element). The
 deeper rule is about the predicate, not the format: a membership test written as
 `isinstance(x, float)` silently partitions the numpy scalar dtypes, because only
 `float64` subclasses Python `float`. A duck-typing check that looks dtype-agnostic
@@ -72,3 +74,20 @@ On the fix branch the same three inputs return `float64`, `float32`, `float64`, 
 numeric. No network, sub-second. The added extractor tests assert numeric dtype for a
 flat numeric column with nulls and still force object dtype for a real array column
 with a null row, failing on `main` and passing on the branch.
+
+## What the review changed
+
+The maintainer approved with "lgtm ! just added a small fix" and committed that fix
+onto the branch before merging, so the code in `main` is not exactly the code this
+entry's repro ran against. His suggestion widened the promotion predicate: it anchors
+the shape comparison on the first element that is actually an ndarray rather than on
+element zero, treats `None` as a null alongside `nan`, and requires the anchor to have
+non-zero dimensionality. It did not replace the original block, it appended a second
+check after it, so both are present in the merged file.
+
+Re-verified this pass in a clean `python:3.11-slim` container at the merge commit
+`521a590f`, provenance printed from `datasets.formatting.formatting.__file__`: every
+before/after dtype this entry asserts still holds on the merged code, so the review
+changed the fix without changing any claim made here. Recording it anyway, because an
+entry that presents our branch as what shipped is quietly taking credit for a shape a
+maintainer corrected.
