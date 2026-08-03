@@ -3,7 +3,11 @@
 - **Repo:** run-llama/llama_index
 - **Surface:** SambaNova `stream_chat` chunk handling
 - **Class:** streaming & usage accounting
-- **Fix:** [PR #22337](https://github.com/run-llama/llama_index/pull/22337) (in review)
+- **Fix:** [PR #22337](https://github.com/run-llama/llama_index/pull/22337), withdrawn
+  2026-08-03. We closed it ourselves to keep the open-PR list to a size one person can
+  shepherd; no maintainer reviewed or refused it. Checked the same day: `stream_chat` still
+  leaves `content_delta` unassigned on the usage-only chunk and still yields it, so the
+  defect stands on main and the branch still applies cleanly.
 
 ## Root cause
 

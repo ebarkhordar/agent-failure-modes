@@ -3,7 +3,11 @@
 - **Repo:** kyegomez/swarms
 - **Surface:** `swarms/utils/litellm_wrapper.py::anthropic_vision_processing` (and the OpenAI variant)
 - **Class:** message-conversion boundary
-- **Fix:** [PR #1712](https://github.com/kyegomez/swarms/pull/1712) (in review)
+- **Fix:** [PR #1712](https://github.com/kyegomez/swarms/pull/1712), withdrawn 2026-08-03. We
+  closed it ourselves to keep the open-PR list to a size one person can shepherd; no
+  maintainer reviewed or refused it. Checked the same day: both branches of
+  `anthropic_vision_processing` still append the text block unconditionally, so the defect
+  stands on master and the branch still applies cleanly.
 
 ## Root cause
 

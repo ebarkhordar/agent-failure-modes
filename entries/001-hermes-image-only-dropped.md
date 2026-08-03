@@ -3,7 +3,14 @@
 - **Repo:** NousResearch/hermes-agent
 - **Surface:** `agent/anthropic_adapter.py::_convert_user_message`
 - **Class:** message-conversion boundary
-- **Fix:** [PR #57907](https://github.com/NousResearch/hermes-agent/pull/57907) (in review)
+- **Fix:** fixed upstream independently on 2026-08-03 by
+  [`a3257cbf4`](https://github.com/NousResearch/hermes-agent/commit/a3257cbf46b648c78836fdc455961298dcd8a64a),
+  which filters blank text blocks per block rather than collapsing the whole list, and
+  [`633bd354f`](https://github.com/NousResearch/hermes-agent/commit/633bd354f99a9f9bef13e093841e0b5ec9a2fa9a),
+  which folds that into a shared helper. Our
+  [PR #57907](https://github.com/NousResearch/hermes-agent/pull/57907) was withdrawn the same
+  day and was not rejected: a maintainer had confirmed the premise on it, and its two
+  regression tests pass against current main with nothing from the branch applied.
 
 ## Root cause
 
@@ -26,8 +33,10 @@ Any user turn consisting of only images (or images plus blank-text captions).
 ## Repro
 
 Send a user message with a single image block through the adapter; the
-converted request contains the placeholder text and no image. Regression test
-in the PR fails on main, passes with the fix.
+converted request contains the placeholder text and no image. The PR's
+regression test failed on main while the defect was live. It passes on main as
+of 2026-08-03, which is how the independent fix above was confirmed to close
+this rather than merely to overlap it.
 
 ## Note
 
