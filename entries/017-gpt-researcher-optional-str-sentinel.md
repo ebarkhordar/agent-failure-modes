@@ -3,7 +3,12 @@
 - **Repo:** assafelovic/gpt-researcher
 - **Surface:** `gpt_researcher/config/config.py::convert_env_value`
 - **Class:** initialization & control flow
-- **Report:** [issue #1899](https://github.com/assafelovic/gpt-researcher/issues/1899) (closed as completed; fixed upstream in maintainer [PR #1910](https://github.com/assafelovic/gpt-researcher/pull/1910), merged)
+- **Report:** [issue #1899](https://github.com/assafelovic/gpt-researcher/issues/1899) (closed
+  as completed). The fix was written by Bartok9 in
+  [PR #1902](https://github.com/assafelovic/gpt-researcher/pull/1902) about twenty hours
+  after the report; the maintainer superseded that with his own
+  [PR #1910](https://github.com/assafelovic/gpt-researcher/pull/1910), merged 2026-07-14,
+  which cherry-picks the commit with its authorship preserved
 
 ## Root cause
 
@@ -32,10 +37,16 @@ e.g. `AGENT_ROLE=none`.
 
 ## Repro
 
-Reproduced in a clean `python:3.12-slim` install at HEAD:
+Reproduced in a clean `python:3.12-slim` install at `1a0a3728`:
 `convert_env_value("AGENT_ROLE", "none", Union[str, None])` returns `"none"`
 (and `"null"`/`""` likewise) instead of `None`. The fix tests the `NoneType`
-sentinel before looping the remaining members.
+sentinel before looping the remaining members. Bartok9's version also carries a
+regression test the report did not ask for, covering `"NONE"` and `"Null"` case
+folding and the `"0"` truthiness edge, plus a non-regression test pinning that
+`Optional[int]` still coerces. `Optional[int]` never had the bug: `int("none")`
+raises, so the loop continued to the sentinel and the branch was reachable there
+all along. The guard the fix adds keys on `type(None) in args`, which covers every
+`Optional[X]` rather than only `Optional[str]`.
 
 ## Note
 
