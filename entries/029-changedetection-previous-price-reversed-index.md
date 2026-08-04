@@ -13,11 +13,18 @@ make the list newest-first. It then reads `sorted_keys[-1]` to fill
 `restock.previous_price`. On a newest-first list, `[-1]` is the oldest snapshot: the
 first price the watch ever recorded.
 
-The `.reverse()` is dead code. `[-1]` after a reverse is exactly `[0]` before it, so the
-two operations cancel and what survives is a read of the wrong end of the history. At two
-snapshots the result is correct by coincidence, because with only two entries the oldest
-snapshot IS the previous check. The defect appears at three or more, which is why the
-existing test, written against a two-price scenario, never caught it.
+`[-1]` after a reverse is exactly `[0]` before it, so what survives is a read of the wrong
+end of the history. At two snapshots the result is correct by coincidence, because with
+only two entries the oldest snapshot IS the previous check. The defect appears at three or
+more, which is why the existing test, written against a two-price scenario, never caught
+it.
+
+The `.reverse()` is not redundant, and an earlier revision of this entry called it dead
+code, which was wrong and undercut the entry's own point. It is load-bearing in both
+directions. With it, `[-1]` is the oldest snapshot; without it, `[-1]` is the newest, which
+is the current check rather than the previous one. Neither is the wanted element, so the
+reverse and the index are each wrong given the other, and a correct fix has to settle both
+at once. The merged fix drops the `.reverse()` and reads `[-2]` from the ascending list.
 
 ## Invariant violated
 
