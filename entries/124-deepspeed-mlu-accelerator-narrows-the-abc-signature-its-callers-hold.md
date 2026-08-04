@@ -5,7 +5,7 @@
   `:81`, `create_graph` at `:186`), against `accelerator/abstract_accelerator.py`
   (`DeepSpeedAccelerator`, `pin_memory` at `:264`)
 - **Class:** interface conformance across implementations
-- **Fix:** [PR #8208](https://github.com/deepspeedai/DeepSpeed/pull/8208) (in review)
+- **Fix:** [PR #8208](https://github.com/deepspeedai/DeepSpeed/pull/8208) (merged 2026-08-04)
 
 ## Root cause
 
