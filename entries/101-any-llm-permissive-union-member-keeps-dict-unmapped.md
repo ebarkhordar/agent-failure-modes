@@ -6,10 +6,18 @@
   against `ChatRequest.options` in the `ollama` SDK's `_types.py`
 - **Class:** configuration wiring & documented contracts
 - **Report:** reproduced publicly on
-  [issue #1206](https://github.com/mozilla-ai/any-llm/issues/1206#issuecomment-5100726561)
-  (open), correcting the reporter's stated mechanism and widening the scope. No PR from us
-  yet: nine keys survive the same gap, and whether each should be mapped or dropped with a
-  warning is a maintainer's call, so the measurement went out as triage first.
+  [issue #1206](https://github.com/mozilla-ai/any-llm/issues/1206#issuecomment-5100726561),
+  correcting the reporter's stated mechanism and widening the scope. No PR from us: nine
+  keys survive the same gap, and whether each should be mapped or dropped with a warning is
+  a maintainer's call, so the measurement went out as triage first.
+- **Fix:** partial. [PR #1213](https://github.com/mozilla-ai/any-llm/pull/1213) by
+  ShiroKSH, merged 2026-08-04, closing #1206 as completed. It maps `max_tokens` and
+  `max_completion_tokens` onto `num_predict` (an explicit `num_predict` keeps priority, and
+  a mismatch is logged). It covers `max_completion_tokens` too, which is what this entry
+  argued the repair had to include. The mechanism the entry is about is untouched:
+  `options=` still receives a plain dict, the permissive union member still keeps it one,
+  and the other seven keys (`logit_bias`, `logprobs`, `n`, `parallel_tool_calls`,
+  `tool_choice`, `top_logprobs`, `user`) still reach the daemon unmapped and unwarned.
 
 ## Root cause
 
