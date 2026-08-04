@@ -2,10 +2,11 @@
 
 - **Repo:** UKGovernmentBEIS/inspect_ai
 - **Surface:** `src/inspect_ai/log/_recover/_write.py`, the module-local `_add_usage` at
-  `:287`, called from `_StatsAccumulator._add_stats` at `:272` and `:276`, against the
+  `:290`, called from `_StatsAccumulator._add_stats` at `:275` and `:279`, against the
   canonical `ModelUsage.__add__` in `src/inspect_ai/model/_model_output.py`
 - **Class:** round-trip & export fidelity
-- **Fix:** [PR #4730](https://github.com/UKGovernmentBEIS/inspect_ai/pull/4730) (in review)
+- **Fix:** [PR #4730](https://github.com/UKGovernmentBEIS/inspect_ai/pull/4730) (open and
+  awaiting review as of 2026-08-04; no maintainer has commented)
 
 ## Root cause
 
@@ -66,14 +67,22 @@ own `tests/log/test_recover_write.py` with `reasoning_tokens` and `total_cost` a
 its sample fixture. The usage values travel through a real `.eval` ZIP serialize and
 deserialize round trip via the repo's own helpers, and `_StatsAccumulator` is
 instantiated by `write_recovered_eval_log` itself rather than hand-built, so the object
-under test is the production one. Before: the recovered `stats.model_usage` comes back
-with `reasoning_tokens: None` and `total_cost: None` while the samples in the same file
-carry 6 and 0.25. After: all seven fields are populated and the rest of the file's tests
-still pass.
+under test is the production one. Each of the two samples carries
+`reasoning_tokens=3` and `total_cost=0.125`, so the rollup owes 6 and 0.25. Before: the
+recovered `stats.model_usage` comes back with `reasoning_tokens: None` and
+`total_cost: None` while those sample values sit in the same file. After: all seven
+fields are populated and the rest of the file's tests still pass.
 
 No mocks are involved in this test, so the question of whether a writer of the field was
 mocked away is answered trivially, and the question behind it, whether a writer was
 never instantiated at all, is answered by the accumulator being constructed by the real
 entry point.
 
-Verified 2026-08-03.
+Verified 2026-08-03. A reader of the PR who is not a maintainer ran both claims
+independently on 2026-08-04 and reported them holding, and made two suggestions that
+went in: assert the recovered numbers as literals rather than recomputing them as
+`usage + usage`, since a test that reuses the operator under discussion can agree with a
+wrong implementation, and cover `role_usage` as well as `model_usage`, since
+`_add_stats` calls the same helper on both. The test now asserts
+`input 20 / output 10 / total 30 / cache_write 4 / cache_read 2 / reasoning 6 /
+cost 0.25` as literals over both accumulators.

@@ -1,11 +1,11 @@
 # Two index sets over one list, one reversed against its own deletions and one not
 
 - **Repo:** UKGovernmentBEIS/inspect_ai
-- **Surface:** `inspect_ai/model/_compaction/edit.py` (`CompactionEdit.compact`, `_apply_server_tool_clearing`)
+- **Surface:** `src/inspect_ai/model/_compaction/edit.py` (`CompactionEdit.compact`, `_apply_server_tool_clearing`)
 - **Class:** indexing, ordering & counting contracts
 - **Fix:** [PR #4529](https://github.com/UKGovernmentBEIS/inspect_ai/pull/4529)
-  (merged 2026-07-30; issue [#4528](https://github.com/UKGovernmentBEIS/inspect_ai/issues/4528),
-  closed as completed)
+  (merged 2026-07-30, shipped in 0.3.252 on 2026-08-04; issue
+  [#4528](https://github.com/UKGovernmentBEIS/inspect_ai/issues/4528), closed as completed)
 
 ## Root cause
 
