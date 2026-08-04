@@ -72,9 +72,35 @@ in-tree module. On HEAD `9d03c5e` (the parent of the fix):
 ```
 
 On the fix branch the same two bundles return `"# hi"` and `"$E=mc^2$"`. The fix
-prefers the richer text keys (`text/markdown`, `text/latex`, and the JSON/HTML
-equivalents) over an object-repr `text/plain`, and falls back to `text/plain` only
-when no richer text is present. The added pure-function fidelity test asserts the
+ranks `text/markdown`, `text/latex`, `application/json`, then `text/plain`, and falls
+back to the bare repr only when no richer text is present. The added pure-function
+fidelity test asserts the
 rich content is returned for each display type and that an ordinary
 `text/plain`-only result is unchanged; it fails on the parent and passes on the
 branch, and the repo's build/test CI is green on the branch.
+
+## Corrections
+
+This entry claimed the fix prefers "the JSON/HTML equivalents". Half of that is wrong
+and has been since the entry was written. `RICH_TEXT_MIMETYPES` is
+`("text/markdown", "text/latex", "application/json", "text/plain")`, and the helper's
+own docstring says `text/html` is deliberately not consulted: markup is not readable
+text, and a `pandas` DataFrame emits both an ASCII `text/plain` table and an HTML one,
+where the plain table is what a text consumer should see. An HTML-only bundle still
+returns `"[HTML Output]"` after the fix, pinned by a test named
+`test_html_only_placeholder_unchanged`. So the root cause above is right that HTML
+content is discarded, and the fix left that case alone on purpose.
+
+The architecture was the reviewer's, not ours. The first version of this PR put the
+selection in `jupyter_mcp_server/utils.py`, and `echarles` asked whether it belonged in
+jupyter-kernel-client instead. We argued against it: choosing what representation a
+model sees looked like a consumer-side decision. He held the line, on the grounds that
+any other consumer of the client benefits from the util, and released
+jupyter-kernel-client 0.12.0 with the helper about half an hour after that PR merged.
+Two days later the sharing stopped anyway: `937eb514b` (#319, 2026-07-25) migrated the
+repo off jupyter-kernel-client onto `code-sandboxes`, and `get_mimebundle_text`,
+`_coerce_bundle_text` and `RICH_TEXT_MIMETYPES` are now local definitions in
+`jupyter_mcp_server/utils.py` again, with the dependency gone from `pyproject.toml`. A
+helper is only shared for as long as the dependency carrying it survives. The
+behaviour is identical either way, and the upstream helper is still released and still
+used by whoever else depends on that client.
