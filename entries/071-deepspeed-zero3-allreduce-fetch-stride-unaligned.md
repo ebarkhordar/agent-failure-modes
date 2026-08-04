@@ -1,11 +1,12 @@
 # A flat buffer sized in aligned units but walked in unaligned ones, so each parameter's span overlaps its predecessor's padding
 
 - **Repo:** deepspeedai/DeepSpeed
-- **Surface:** `deepspeed/runtime/zero/partition_parameters.py::Init._all_gather_coalesced`,
-  the `stage3_use_all_reduce_for_fetch_params` branch
+- **Surface:** `deepspeed/runtime/zero/partition_parameters.py`, the
+  `stage3_use_all_reduce_for_fetch_params` branch of `_all_gather_coalesced`, which is a
+  closure defined inside `Init._convert_to_deepspeed_param` rather than a method on `Init`
 - **Class:** indexing, ordering & counting contracts
-- **Fix:** [PR #8158](https://github.com/deepspeedai/DeepSpeed/pull/8158) (in review;
-  self-discovered, no issue)
+- **Fix:** [PR #8158](https://github.com/deepspeedai/DeepSpeed/pull/8158) (open and approved
+  by three maintainers, unmerged as of 2026-08-04; self-discovered, no issue)
 
 ## Root cause
 
@@ -92,6 +93,15 @@ param p1 was not reconstructed exactly:
 7778 is the sentinel 7777 filling `p0`'s uninitialized padding plus `p1`'s real
 first element of 1.0, which identifies the value as the SUM overlap rather than
 generic garbage.
+
+That reproduction was CPU and gloo only, which left the on-device behaviour of a
+collective-communication bug unproven, and a reviewer closed the gap rather than
+taking the CPU result for it. `sfc-gh-truwase` ran the same test on two GPUs over NCCL
+at the PR head, with the fix and again with `ds_numel_aligned` reverted to `ds_numel`,
+and got the identical `[7778.0, 2.0, ...]` corruption in the padded case and a pass in
+the aligned one. The failing value matching to the digit across two different backends
+is worth more than either run alone: it shows the defect is in the offset arithmetic
+and not in anything gloo or the CPU allocator does.
 
 The sentinel deserves its own note, because it is the reason the first attempt
 at this reproduction was wrong. The padding tail is uninitialized by
