@@ -9,10 +9,10 @@
 - **Class:** message-conversion boundaries
 - **Report:** [issue #1200](https://github.com/mozilla-ai/any-llm/issues/1200), filed by
   another user, open. Nothing was posted by us and no PR was opened: an open PR from an
-  outside contributor,
-  [#1204](https://github.com/mozilla-ai/any-llm/pull/1204), already implements the fix in the
-  shared normalizer and covers both paths. This entry records the reproduction and what it
-  showed beyond the report.
+  outside contributor, [#1204](https://github.com/mozilla-ai/any-llm/pull/1204), implements a
+  fix. This entry records the reproduction and what it showed beyond the report. See
+  **Update 2026-08-04**, which corrects what that PR is going to land and qualifies one claim
+  below.
 
 ## Root cause
 
@@ -116,3 +116,42 @@ paths comes from reading its diff and its tests, not from running them.
 
 Verified 2026-08-01 at `d277097b`. Reported upstream by another user; the fix is open and not
 merged, so both re-validation sites still ship as described.
+
+## Update 2026-08-04
+
+Two things in the review of #1204 correct this entry, and both were caught by people upstream
+rather than by us.
+
+**The fix is moving out of the shared normalizer, so the blast radius measured above stays
+open.** The maintainer asked why the change was in the OpenAI provider rather than in z.ai's,
+and the author agreed to move it to a helper in `providers/zai/utils.py`, applied as a pre
+pass on `_convert_completion_response` and `_convert_completion_chunk_response`. That is the
+right call for the repository: the value is one vendor's, and putting a vendor's vocabulary in
+the shared OpenAI path makes every other provider inherit a mapping that is not true of them.
+It does mean the sentence above, that locating the shared ancestor "is also what makes a
+one-place fix possible", describes a fix that will not land in that form. What lands covers
+z.ai on both paths. The other 30 providers inheriting `_convert_completion_chunk_response`
+keep the re-validation exactly as described, so the general defect this entry is about is not
+what #1204 resolves.
+
+**The mapping is an approximation, not an equivalence, and the enum is short by three rather
+than by one.** The author found that z.ai documents the value. Read directly on 2026-08-04,
+z.ai's Chat Completion reference describes `choices[].finish_reason` as "Reason for model
+inference termination. Can be `stop`, `tool_calls`, `length`, `sensitive`,
+`model_context_window_exceeded` or `network_error`." So `length` and
+`model_context_window_exceeded` are two distinct documented outcomes on the vendor's side, and
+folding one onto the other discards a distinction the vendor draws. It also means `sensitive`
+and `network_error` sit outside the OpenAI literal set too: three of z.ai's six documented
+finish reasons fail the re-validation today, and #1200 is the one of the three that somebody
+happened to hit.
+
+That count is the strongest evidence in this entry for its own third invariant, and the entry
+did not have it. "A closed enum over values chosen by a remote server is a liability wearing
+the costume of a safety property" was argued from the mechanism; the measurement is that a
+single vendor's published list already falls half outside the enum, before any roadmap moves.
+It also sharpens the prescription. "The parsing layer should widen and map" is too quick,
+because `sensitive` and `network_error` have no honest OpenAI equivalent and mapping them
+anywhere would report a censored or failed generation as a normal stop. Widening is the part
+that is always right; mapping is only right where the target value is true, and where it is
+not, the layer needs somewhere to put a value it can carry without either lying about it or
+raising.
