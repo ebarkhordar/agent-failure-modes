@@ -5,8 +5,14 @@
 - **Class:** message-conversion boundaries
 - **Fix:** [PR #4202](https://github.com/camel-ai/camel/pull/4202) (merged
   2026-07-21 by fengju0213; issue [#4201](https://github.com/camel-ai/camel/issues/4201)).
-  The maintainer added a follow-up commit `d09322ba` covering the ERROR/TIMEOUT
-  cases and empty response content on top of the mapping.
+  The maintainer's follow-up commit `d09322ba` did not extend the mapping, it
+  replaced part of it. Our branch mapped ERROR and TIMEOUT to `"stop"`, following
+  the fallback in `XAIModel._map_finish_reason`; the shipped code raises
+  `RuntimeError` on those two and `ValueError` on any unmapped value, and only the
+  four success reasons are translated. He was right, and the correction belongs in
+  this entry rather than in its footnotes: `"stop"` reports a completed generation
+  for a request that failed, so our repair turned an obviously illegal value into a
+  legal one that is still false, which is the same defect one layer quieter.
 
 ## Root cause
 
@@ -62,8 +68,12 @@ Clean `python:3.11-slim` container, camel installed from source at the branch,
 `cohere` 5.21.1 (camel pins `cohere>=5.11.0,<6`), with `__file__` provenance
 printed on both sides. Each of the six values Cohere can return was driven
 through the real `_to_openai_response`: 6 of 6 emitted a value outside OpenAI's
-legal set before the fix, 0 of 6 after. The repo's own suite, run the way CI
-runs it (`pytest test/models/test_cohere_model.py --fast-test-mode -m "not
+legal set before the fix, 0 of 6 on the branch as submitted. That second number
+describes our branch and not the code that shipped: after `d09322ba` four of the
+six map and the other two raise, so no value reaches a caller off-contract by
+either route, but nothing emits a finish reason for ERROR or TIMEOUT at all.
+
+The repo's own suite, run the way CI runs it (`pytest test/models/test_cohere_model.py --fast-test-mode -m "not
 heavy_dependency"`), gives 7 failed / 4 passed / 5 skipped on master with the
 new tests applied, and 11 passed / 5 skipped on the branch.
 
