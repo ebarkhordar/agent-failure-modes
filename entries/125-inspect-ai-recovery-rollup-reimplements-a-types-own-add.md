@@ -6,7 +6,8 @@
   canonical `ModelUsage.__add__` in `src/inspect_ai/model/_model_output.py`
 - **Class:** round-trip & export fidelity
 - **Fix:** [PR #4730](https://github.com/UKGovernmentBEIS/inspect_ai/pull/4730) (open and
-  awaiting review as of 2026-08-04; no maintainer has commented)
+  awaiting review as of 2026-08-05; no maintainer has commented, and 0.3.252 was cut
+  on 2026-08-04 without it, so the changelog entry now sits under Unreleased)
 
 ## Root cause
 
