@@ -5,8 +5,9 @@
   `stage3_use_all_reduce_for_fetch_params` branch of `_all_gather_coalesced`, which is a
   closure defined inside `Init._convert_to_deepspeed_param` rather than a method on `Init`
 - **Class:** indexing, ordering & counting contracts
-- **Fix:** [PR #8158](https://github.com/deepspeedai/DeepSpeed/pull/8158) (open and approved
-  by three maintainers, unmerged as of 2026-08-04; self-discovered, no issue)
+- **Fix:** [PR #8158](https://github.com/deepspeedai/DeepSpeed/pull/8158), merged
+  2026-08-05 by `tohtana` after approvals from `tohtana`, `sfc-gh-truwase` and `PKUWZP`
+  (self-discovered, no issue)
 
 ## Root cause
 
