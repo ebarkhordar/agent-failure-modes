@@ -9,9 +9,13 @@
 - **Class:** configuration wiring & documented contracts
 - **Report:** reproduced publicly on
   [issue #5257](https://github.com/LearningCircuit/local-deep-research/issues/5257#issuecomment-5103100048)
-  (open). Triage only, no PR from us: the reporter arrived with the correct root cause and a
-  proposed patch and was fixing it himself, so the useful contribution was measuring what his
-  repro and his patch actually do, not racing him to the diff.
+  (closed as completed 2026-08-05). Triage only, no PR from us: the reporter arrived with
+  the correct root cause and a proposed patch and was fixing it himself, so the useful
+  contribution was measuring what his repro and his patch actually do, not racing him to
+  the diff.
+- **Fix:** [PR #5364](https://github.com/LearningCircuit/local-deep-research/pull/5364) by
+  RerankerGuo, merged 2026-08-05 by LearningCircuit. See "As shipped" below: it resolves
+  the split, and it does not reach the two other module-level captures.
 
 ## Root cause
 
@@ -134,3 +138,38 @@ setter, so `:162-163` and the `:170` chmod have to be removed before it runs, an
 measurement is of that corrected form.
 
 Verified 2026-07-28 at HEAD `e5ff013c`. Reported, not fixed upstream at the time of writing.
+
+## As shipped
+
+PR #5364 merged on 2026-08-05, +37/-9 on `encrypted_db.py` plus a new
+`tests/database/test_encrypted_db_live_data_dir.py`. `__init__` no longer resolves
+anything: the two lines that captured the path and the `_best_effort_chmod` beside them
+are gone, replaced by `self._data_dir_override = None` and
+`self._initialized_data_dirs: set[Path] = set()`. `data_dir` is now a property that calls
+`get_data_directory()` on every access when no override is set, with a setter so
+assignment still works. Creation and hardening moved into `_ensure_data_dir(path)`, which
+mkdirs and chmods `0o700` under the existing `_connections_lock` and records the path in
+`_initialized_data_dirs`.
+
+Both corollaries above were the design questions the fix had to answer, and it answers
+them the way this entry argued. The latch is keyed on the resolved path rather than on a
+boolean, so a second, different root is hardened rather than skipped. The setter exists
+because the proposed patch did not import without one. The regression test constructs the
+manager first, reads `data_dir`, and only then points the data root somewhere else, which
+is the ordering that fails on unfixed code, and it asserts
+`stat.S_IMODE(user_path.parent.stat().st_mode) == 0o700`, which is the assertion a
+functional test would not have made. The author said as much on the issue before writing
+it, naming "the corrected import-before-override reproduction" and the per-path
+initialize and chmod as what he was implementing.
+
+What the fix does not reach is the rest of the Root cause section. Only
+`encrypted_db.py` changed, so both other module-level captures are still there at `main`
+`92c80718`: `utilities/db_utils.py:19` still binds `DATA_DIR = get_data_directory()` at
+import, and `web/models/database.py:11` still does the same and then runs
+`os.makedirs(DATA_DIR, exist_ok=True)` at `:15`, so importing that module before
+`LDR_DATA_DIR` is set still creates the platformdirs root as a side effect. Neither
+`DATA_DIR` has a reader, which is why they look dead and why the mkdir is the only
+observable consequence.
+
+Read from the merged diff and the current `main`, not re-executed: the before and after
+numbers above remain the 2026-07-28 measurements.
