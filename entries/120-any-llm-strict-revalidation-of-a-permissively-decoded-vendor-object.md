@@ -8,11 +8,12 @@
   subclasses declared in `src/any_llm/types/completion.py`
 - **Class:** message-conversion boundaries
 - **Report:** [issue #1200](https://github.com/mozilla-ai/any-llm/issues/1200), filed by
-  another user, open. Nothing was posted by us and no PR was opened: an open PR from an
-  outside contributor, [#1204](https://github.com/mozilla-ai/any-llm/pull/1204), implements a
-  fix. This entry records the reproduction and what it showed beyond the report. See
-  **Update 2026-08-04**, which corrects what that PR is going to land and qualifies one claim
-  below.
+  another user, closed as completed 2026-08-06. Nothing was posted by us and no PR was opened:
+  the fix came from an outside contributor,
+  [#1204](https://github.com/mozilla-ai/any-llm/pull/1204), merged 2026-08-06. This entry
+  records the reproduction and what it showed beyond the report. See **Update 2026-08-04**,
+  which corrects what that PR landed and qualifies one claim below, and the merge note at its
+  end.
 
 ## Root cause
 
@@ -45,9 +46,9 @@ against streaming and `ChatCompletionChunk`; the non-streaming path fails identi
 radius is not z.ai. Walking the provider package with `ast`, 33 classes inherit
 `BaseOpenAIProvider` transitively and 30 of them inherit `_convert_completion_chunk_response`
 unchanged, so any of those providers emitting any stop reason outside the enum reaches the
-same line. PR #1204 covers both paths, and it does so because it patches
+same line. PR #1204 as first written covered both paths, because it patched
 `_normalize_openai_dict_response`, the normalizer both call chains share, rather than either
-call site.
+call site. That is not the version that merged; see **Update 2026-08-04**.
 
 ## Invariant violated
 
@@ -114,8 +115,8 @@ of them narrowing the field.
 modelled on the one in the report rather than captured. The claim that PR #1204 resolves both
 paths comes from reading its diff and its tests, not from running them.
 
-Verified 2026-08-01 at `d277097b`. Reported upstream by another user; the fix is open and not
-merged, so both re-validation sites still ship as described.
+Verified 2026-08-01 at `d277097b`. Reported upstream by another user; the fix merged
+2026-08-06 scoped to one provider, so both re-validation sites still ship as described.
 
 ## Update 2026-08-04
 
@@ -155,3 +156,12 @@ anywhere would report a censored or failed generation as a normal stop. Widening
 that is always right; mapping is only right where the target value is true, and where it is
 not, the layer needs somewhere to put a value it can carry without either lying about it or
 raising.
+
+**Merged 2026-08-06.** #1204 landed at 12:47:35Z as "fix(zai): scope GLM finish reason mapping
+to the zai provider", touching three files: `src/any_llm/providers/zai/utils.py`,
+`src/any_llm/providers/zai/zai.py` and `tests/unit/providers/test_zai_provider.py`. #1200 was
+closed as completed in the same minute. The scoping predicted above is what shipped, so the
+general defect this entry describes is untouched: the two `model_validate` calls in the shared
+OpenAI path are unchanged, and every other provider that inherits them still re-validates a
+permissively decoded object against a closed enum. Read from the merged file list and the PR
+title, not re-executed.
