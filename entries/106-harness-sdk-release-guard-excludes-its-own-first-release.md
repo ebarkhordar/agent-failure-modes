@@ -1,4 +1,4 @@
-# The fix is in the repository and cannot reach users, because the release job refuses to run without a baseline tag that this component has never had
+# The fix is in the repository and cannot reach users, because the release job refuses to run without a baseline tag that this component did not have
 
 - **Repo:** strands-agents/harness-sdk
 - **Surface:** `.github/workflows/release-mcp.yml`, the `scan-commits` job (`:81-86`), against
@@ -6,10 +6,12 @@
   `strands-mcp/pyproject.toml:27`
 - **Class:** release paths & published artifacts
 - **Report:** reproduced publicly on
-  [issue #3533](https://github.com/strands-agents/harness-sdk/issues/3533#issuecomment-5113963614)
-  (open). No PR from us: the two candidate repairs are pushing a baseline `mcp/v0.2.7` tag by
-  hand and carving a first-release case out of the guard, and which one is correct depends on
-  release policy we cannot read from the repository.
+  [issue #3533](https://github.com/strands-agents/harness-sdk/issues/3533#issuecomment-5113963614),
+  closed as completed 2026-08-06 by a maintainer after 0.2.8 reached PyPI. No PR from us: the
+  two candidate repairs are pushing a baseline `mcp/v0.2.7` tag by hand and carving a
+  first-release case out of the guard, and which one is correct depends on release policy we
+  cannot read from the repository. Upstream took the first. See **Resolved 2026-08-06** below,
+  which also corrects one word of the headline.
 
 ## Root cause
 
@@ -39,10 +41,10 @@ fi
 ```
 
 The repository carries 164 tags, under `python/` (69), `typescript/` (35), `python-wasm/` (1) and
-bare `v*` (59). Under `mcp/` there are none, and there never have been, which is the condition
-`:83` exits on. Every later job in that workflow lists `scan-commits` in `needs` (`:132`, `:142`,
-`:152`, `:245`, `:317`, `:342`), so a `workflow_dispatch` stops in the first job and nothing is
-built, signed or uploaded.
+bare `v*` (59). Under `mcp/` there are none, which is the condition `:83` exits on. Every later
+job in that workflow lists `scan-commits` in `needs` (`:132`, `:142`, `:152`, `:245`, `:317`,
+`:342`), so a `workflow_dispatch` stops in the first job and nothing is built, signed or
+uploaded.
 
 The blast radius is one package. Reading `requires_dist` from PyPI for the rest of the family:
 `strands-agents` 1.50.2 already ships `mcp<2.0.0,>=1.23.0`, and `strands-agents-tools` 0.8.5 and
@@ -110,3 +112,42 @@ guard's behaviour on an empty tag list is read from the workflow source and from
 absence of any `mcp/` tag, not from an observed run.
 
 Verified 2026-07-29. Reported, not fixed upstream at the time of writing.
+
+## Resolved 2026-08-06
+
+`strands-agents-mcp-server` 0.2.8 was uploaded to PyPI on 2026-07-30T21:30:16Z and its
+`requires_dist` carries `mcp<2.0.0,>=1.1.3`, so the cap that sat in `pyproject.toml` is now in
+the published metadata and `uvx strands-agents-mcp-server` resolves `mcp` 1.x. A maintainer
+closed #3533 as completed on 2026-08-06 after another user re-ran the install and reported it
+clean.
+
+Of the two candidate repairs named above, upstream took the first. `.github/workflows/release-mcp.yml`
+has exactly one commit in its history (`90d63bab`, 2026-07-24), so the guard was never touched:
+`if [ -z "$PREV_TAG" ]` is still at `:83` and still exits 1 on an empty tag list. What changed is
+the input. The repository now answers `git ls-remote --tags` with 175 refs against the 164
+measured on 2026-07-29, and ten of them are under `mcp/`: `v0.1.0`, `v0.2.0` through `v0.2.8`.
+Nine predate the new release and point at their historical commits (`mcp/v0.1.0` at `b3a5bd68`,
+committed 2025-05-16; `mcp/v0.2.7` at `0b7ea7cd`, committed 2026-03-10), which is what a
+backfill looks like and not what a release produces. It is a reconstruction rather than a
+record: the namespace and PyPI's twelve uploads do not line up either way, since `mcp/v0.2.1`
+names a version never published and 0.0.1, 0.1.1 and 0.1.2 were published and got no tag. Only
+the highest tag has to be right for `:82` to work, which is presumably why the rest was cheap. The GitHub API lists two runs of that workflow, both `workflow_dispatch` and both
+successful, at 2026-07-30T17:59Z and 18:25Z; their run numbers are 3 and 4, so two earlier runs
+are missing from the list and this entry does not know what they were.
+
+The dates order the events and nothing here establishes that the report caused the repair.
+
+**The defect the entry is about is unfixed; only this instance of it is.** The guard still has
+no case for an empty namespace, so the next component carved into this monorepo starts at n=0
+against the same `exit 1`, and the repair that worked here has to be remembered and repeated by
+hand. That is the ordinary shape of fixing an n=0 bug by supplying the missing n: the fixed
+point is broken for one namespace, not removed.
+
+One word of the original write-up was wrong, and the correction is the same rule this corpus
+applies to a PR. The headline and the Root cause section said the component had **never** had a
+tag under `mcp/`. The measurement behind that was a single unpaginated `git ls-remote --tags` on
+2026-07-29, which is an instrument that reads the refs a repository has now. It cannot see a
+deleted tag, and a backfilled tag is indistinguishable from an always-present one in it, so
+"there are none today" was supported and "there never have been" was not. Both now read
+"did not have". The `:83` diagnosis never depended on the stronger claim: an empty tag list at
+dispatch time is the whole trigger.
