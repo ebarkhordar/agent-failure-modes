@@ -2,7 +2,7 @@
 
 - **Repo:** NousResearch/hermes-agent
 - **Surface:** `agent/anthropic_adapter.py::_convert_user_message`
-- **Class:** message-conversion boundary
+- **Class:** message-conversion boundaries
 - **Fix:** fixed upstream independently on 2026-08-03 by
   [`a3257cbf4`](https://github.com/NousResearch/hermes-agent/commit/a3257cbf46b648c78836fdc455961298dcd8a64a),
   which filters blank text blocks per block rather than collapsing the whole list, and

@@ -2,7 +2,7 @@
 
 - **Repo:** Giskard-AI/giskard-oss
 - **Surface:** `giskard/llm/translators/anthropic.py::AnthropicChatTranslator.from_anthropic`
-- **Class:** message-conversion boundary
+- **Class:** message-conversion boundaries
 - **Fix:** merged upstream in
   [PR #2647](https://github.com/Giskard-AI/giskard-oss/pull/2647) on 2026-08-03, which
   also closed issue [#2615](https://github.com/Giskard-AI/giskard-oss/issues/2615) as

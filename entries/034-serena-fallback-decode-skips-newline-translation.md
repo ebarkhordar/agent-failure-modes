@@ -2,7 +2,7 @@
 
 - **Repo:** oraios/serena
 - **Surface:** `src/solidlsp/ls_utils.py::FileUtils.read_file` (the `charset_normalizer` fallback)
-- **Class:** text decomposition contract
+- **Class:** text decomposition contracts
 - **Fix:** [PR #1706](https://github.com/oraios/serena/pull/1706) (merged 2026-07-17)
 
 ## Root cause

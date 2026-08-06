@@ -2,7 +2,7 @@
 
 - **Repo:** kyegomez/swarms
 - **Surface:** `swarms/utils/litellm_wrapper.py::anthropic_vision_processing` (and the OpenAI variant)
-- **Class:** message-conversion boundary
+- **Class:** message-conversion boundaries
 - **Fix:** [PR #1712](https://github.com/kyegomez/swarms/pull/1712), withdrawn 2026-08-03. We
   closed it ourselves to keep the open-PR list to a size one person can shepherd; no
   maintainer reviewed or refused it. Checked the same day: both branches of

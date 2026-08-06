@@ -4,7 +4,7 @@
 - **Surface:** the defect lived in `src/serena/util/text_utils.py::search_text`; the merged
   fix is mostly in `src/solidlsp/ls_utils.py` (the new `TextStepper`), with `text_utils.py`
   taking only two call-site swaps
-- **Class:** text decomposition contract
+- **Class:** text decomposition contracts
 - **Fix:** upstream [PR #1691](https://github.com/oraios/serena/pull/1691), maintainer-authored (merged 2026-07-15). [PR #1684](https://github.com/oraios/serena/pull/1684), which reported and first fixed this and was written by my collaborator [@AmirF194](https://github.com/AmirF194), was closed as superseded by it.
 
 ## Root cause

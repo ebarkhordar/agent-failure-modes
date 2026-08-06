@@ -2,7 +2,7 @@
 
 - **Repo:** oraios/serena
 - **Surface:** `src/serena/tools/file_tools.py::ReadFileTool.apply`
-- **Class:** text decomposition contract
+- **Class:** text decomposition contracts
 - **Fix:** [PR #1699](https://github.com/oraios/serena/pull/1699) (merged 2026-07-15, maintainer-amended before merge)
 
 ## Root cause

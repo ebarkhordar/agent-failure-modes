@@ -2,7 +2,7 @@
 
 - **Repo:** Giskard-AI/giskard-oss
 - **Surface:** `giskard/llm/translators/anthropic.py::AnthropicChatTranslator.to_anthropic`
-- **Class:** message-conversion boundary
+- **Class:** message-conversion boundaries
 - **Report:** [issue #2613](https://github.com/Giskard-AI/giskard-oss/issues/2613)
   (deterministic repro, fix suggested). A maintainer closed it on 2026-07-29 and pointed
   at [PR #2623](https://github.com/Giskard-AI/giskard-oss/pull/2623), an outside

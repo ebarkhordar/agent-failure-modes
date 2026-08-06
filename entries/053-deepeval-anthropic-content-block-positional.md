@@ -2,7 +2,7 @@
 
 - **Repo:** confident-ai/deepeval
 - **Surface:** `deepeval/anthropic/extractors.py::extract_messages_api_output_parameters`
-- **Class:** message-conversion boundary
+- **Class:** message-conversion boundaries
 - **Fix:** [PR #2914](https://github.com/confident-ai/deepeval/pull/2914) (in review;
   issue [#2913](https://github.com/confident-ai/deepeval/issues/2913))
 

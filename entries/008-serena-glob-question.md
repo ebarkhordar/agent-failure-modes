@@ -2,7 +2,7 @@
 
 - **Repo:** oraios/serena
 - **Surface:** `glob_to_regex`
-- **Class:** text decomposition contract
+- **Class:** text decomposition contracts
 - **Fix:** [PR #1682](https://github.com/oraios/serena/pull/1682) (merged)
 
 ## Root cause

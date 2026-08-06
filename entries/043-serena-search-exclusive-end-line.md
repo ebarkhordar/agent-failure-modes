@@ -2,7 +2,7 @@
 
 - **Repo:** oraios/serena
 - **Surface:** `src/serena/util/text_utils.py::search_text`
-- **Class:** indexing, ordering & counting contract
+- **Class:** indexing, ordering & counting contracts
 - **Fix:** [PR #1708](https://github.com/oraios/serena/pull/1708) (merged)
 
 ## Root cause
