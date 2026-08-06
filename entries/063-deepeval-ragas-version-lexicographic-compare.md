@@ -3,8 +3,12 @@
 - **Repo:** confident-ai/deepeval
 - **Surface:** `deepeval/metrics/ragas.py` (`import_ragas`, the installed-vs-required version gate)
 - **Class:** indexing, ordering & counting contracts
-- **Fix:** [PR #2915](https://github.com/confident-ai/deepeval/pull/2915) (in review;
-  issue [#2905](https://github.com/confident-ai/deepeval/issues/2905))
+- **Fix:** [PR #2915](https://github.com/confident-ai/deepeval/pull/2915), withdrawn by us on
+  2026-08-06 (issue [#2905](https://github.com/confident-ai/deepeval/issues/2905)). Nobody
+  reviewed it or objected to it: we had five PRs open on this repository at once and closed
+  three, this among them, to leave one review queue a reasonable amount of work. The defect
+  is unfixed. `deepeval/metrics/ragas.py:561` on `main` `bd10fa61` still reads
+  `if installed_version < required_version:` against `required_version = "0.2.1"`.
 
 ## Root cause
 

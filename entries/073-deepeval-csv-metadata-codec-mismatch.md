@@ -3,7 +3,11 @@
 - **Repo:** confident-ai/deepeval
 - **Surface:** `deepeval/dataset/dataset.py` (`EvaluationDataset.save_as("csv")` writing the `additional_metadata` column, and `add_goldens_from_csv_file` reading it back)
 - **Class:** round-trip & export fidelity
-- **Fix:** [PR #2942](https://github.com/confident-ai/deepeval/pull/2942) (in review; self-discovered, no issue)
+- **Fix:** [PR #2942](https://github.com/confident-ai/deepeval/pull/2942), withdrawn by us on
+  2026-08-06 (self-discovered, no issue). Nobody reviewed it or objected to it: we had five
+  PRs open on this repository at once and closed three, this among them, to leave one review
+  queue a reasonable amount of work. The defect is unfixed. `ast.literal_eval` still decodes
+  the column at `deepeval/dataset/dataset.py:372` and `:601` on `main` `bd10fa61`.
 
 ## Root cause
 

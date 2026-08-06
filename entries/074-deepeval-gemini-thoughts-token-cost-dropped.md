@@ -3,8 +3,12 @@
 - **Repo:** confident-ai/deepeval
 - **Surface:** `deepeval/models/llms/gemini_model.py::_token_cost` (the `output_tokens = getattr(usage, "candidates_token_count", None)` read that feeds `calculate_cost`)
 - **Class:** streaming & usage accounting
-- **Fix:** [PR #2943](https://github.com/confident-ai/deepeval/pull/2943) (in review;
-  self-discovered, no issue)
+- **Fix:** [PR #2943](https://github.com/confident-ai/deepeval/pull/2943), withdrawn by us on
+  2026-08-06 (self-discovered, no issue). Nobody reviewed it or objected to it: we had five
+  PRs open on this repository at once and closed three, this among them, to leave one review
+  queue a reasonable amount of work. The defect is unfixed.
+  `deepeval/models/llms/gemini_model.py:354` on `main` `bd10fa61` still reads
+  `output_tokens = getattr(usage, "candidates_token_count", None)`.
 
 ## Root cause
 
