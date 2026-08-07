@@ -2,7 +2,7 @@
 
 - **Repo:** pydantic/pydantic-ai
 - **Surface:** `pydantic_ai/_json_schema.py::JsonSchemaTransformer` (`_handle`)
-- **Class:** schema traversal completeness
+- **Class:** recursive traversal completeness
 - **Report:** [issue #6439](https://github.com/pydantic/pydantic-ai/issues/6439) (closed as completed; fixed upstream in [PR #6440](https://github.com/pydantic/pydantic-ai/pull/6440), merged 2026-07-13)
 
 ## Root cause

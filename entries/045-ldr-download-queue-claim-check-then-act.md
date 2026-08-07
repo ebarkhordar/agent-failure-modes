@@ -2,7 +2,7 @@
 
 - **Repo:** LearningCircuit/local-deep-research
 - **Surface:** `src/local_deep_research/research_library/services/download_service.py`, `library_download_queue` status transitions
-- **Class:** check-then-act race, shared mutable state, claim/release protocol
+- **Class:** concurrency & atomic claims
 - **Fix:** [PR #5081](https://github.com/LearningCircuit/local-deep-research/pull/5081) (merged), [issue #4691](https://github.com/LearningCircuit/local-deep-research/issues/4691)
 
 ## Root cause

@@ -2,7 +2,7 @@
 
 - **Repo:** datalayer/jupyter-mcp-server
 - **Surface:** `jupyter_mcp_server/notebook_manager.py` (`ensure_kernel_alive`, `add_notebook`)
-- **Class:** shared mutable state & partial-rebuild binding loss
+- **Class:** resource liveness & reconnection
 - **Fix:** [PR #288](https://github.com/datalayer/jupyter-mcp-server/pull/288) (merged), [issue #287](https://github.com/datalayer/jupyter-mcp-server/issues/287)
 
 ## Root cause

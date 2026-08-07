@@ -2,7 +2,7 @@
 
 - **Repo:** datalayer/jupyter-mcp-server
 - **Surface:** `jupyter_mcp_server/tools/execute_cell_tool.py::_write_outputs_to_cell`, `jupyter_mcp_server/utils.py::execute_via_execution_stack`
-- **Class:** round-trip fidelity, type reconstruction
+- **Class:** message-conversion boundaries
 - **Fix:** [PR #278](https://github.com/datalayer/jupyter-mcp-server/pull/278) (merged), [issue #277](https://github.com/datalayer/jupyter-mcp-server/issues/277)
 
 ## Root cause
